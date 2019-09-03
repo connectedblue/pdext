@@ -1,1 +1,2 @@
 ./_version.py export-subst
+pdext/_version.py export-subst
