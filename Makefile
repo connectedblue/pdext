@@ -6,11 +6,14 @@ TARBALL :=
 
 
 # Convenience shortcuts
+MAKEFILE_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+
 PKG_LIB := pdext_tarballs
 PY_SETUP := python setup.py
 PIP_INSTALL := pip install
 PIP_UNINSTALL := pip uninstall -y
 FIND_LATEST_FILE := -type f -printf '%T@ %p\n' | sort -n | tail -1 | cut -f2- -d" "
+TEST_SUITE := $(MAKEFILE_DIR)/tests
 
 CURRENT_VERSION := $(shell python -c 'from pdext._version import get_versions; v = get_versions();print(v.get("closest-tag", v["version"]))')
 ifndef VERSION 
@@ -29,7 +32,8 @@ deploy: build
 clean:
 	-rm -rf dist pdext.egg-info  __pycache__
 
-
+test: install
+	-cd /tmp && pytest $(TEST_SUITE)
 
 ifdef TARBALL
 install: uninstall install_tarball
