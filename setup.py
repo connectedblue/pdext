@@ -7,7 +7,8 @@ setup(
     cmdclass=versioneer.get_cmdclass(),
     description= 'Extension framework for pandas',
     author='Chris Shaw',
-    packages=find_packages(),
+    packages=find_packages('src'),
+    package_dir={'': 'src'},
     install_requires=[
         'pandas', 
         'numpy', 

@@ -1,3 +1,2 @@
 include versioneer.py
-include ./_version.py
-include pdext/_version.py
+include src/pdext/_version.py

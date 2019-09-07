@@ -30,13 +30,13 @@ deploy: build
 	cp $(BUILT_GZ) $(PKG_LIB)
 
 clean:
-	-rm -rf dist pdext.egg-info  __pycache__
+	-rm -rf dist src/pdext.egg-info  __pycache__ .pytest_cache
 
 test: install
 	-cd /tmp && pytest $(TEST_SUITE)
 
 ifdef TARBALL
-install: uninstall install_tarball
+install: deploy install_tarball
 else
 ifdef EDIT
 install: uninstall install_editable

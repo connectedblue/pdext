@@ -32,6 +32,34 @@ class ExtensionClassTemplate(object):
         self._obj = pandas_obj
         # This method is defined in the accessor sub folder
         self._initialise()
+       
+    def __getattr__(self, func):
+        if pd.ext.is_extension(func):
+            func = pd.ext.get_extension_function(func)
+            if hasattr(func, '__call__'):
+                @wraps(func)
+                def newfunc(*args, **kwargs):
+                    result = func(self._obj, *args, **kwargs)
+                    return result
+                self._update_func_doc(newfunc)
+                return newfunc
+        else:
+            return self.__getattribute__(func)
+    
+    @staticmethod
+    def _update_func_doc(func):
+        func_name = func.__name__
+        sig = inspect.signature(func)
+        doc = func.__doc__
+        params = list(sig.parameters)
+        first_arg = params[0]
+        other_args = ', '.join(params[1:])
+        args = first_arg + other_args
+        doc += '\nUSAGE: {first_arg}.ext.{func_name}({other_args})'\
+                .format(first_arg=first_arg,
+                        func_name=func_name,
+                        other_args=other_args)
+        func.__doc__ = doc
 
 def load_extensions(namespace):
     # Compose a class from the template and mix-ins defined
