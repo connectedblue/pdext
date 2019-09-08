@@ -8,6 +8,11 @@ from test_data import *
 def test_register_single_extension():
     # register the extension function
     repository().add_extension(extension_function)
+    # check function has been saved inside package
+    extfile = repository()._extension_file_name('extension_function')
+    with open(extfile, 'r') as test_contents:
+        assert 'def extension_function(df, value=0):' in \
+                    test_contents.read()
 
 
 def test_single_extension_function(df_A):
@@ -27,6 +32,14 @@ def test_remove_extension(df_A):
     repository().clear()
     with pytest.raises(AttributeError):
         df_ext(df_A).extension_function(4)
+
+def test_load_extensions_from_package(df_A):
+    # The extension function should still be saved in the package
+    # try to load it after the clearing above
+    repository().load_extensions()
+    df_ext(df_A).extension_function(5)
+    assert 'new_col' in df_A.columns
+    assert df_A.new_col.sum() == 5*df_A.shape[0]
 
 
 

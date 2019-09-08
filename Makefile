@@ -30,7 +30,7 @@ deploy: build
 	cp $(BUILT_GZ) $(PKG_LIB)
 
 clean:
-	-rm -rf dist src/pdext.egg-info  __pycache__ .pytest_cache
+	-rm -rf dist src/pdext.egg-info  __pycache__ .pytest_cache src/pdext/installed_extensions/*.py
 
 test: install
 	-cd /tmp && pytest $(TEST_SUITE)

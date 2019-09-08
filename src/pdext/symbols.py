@@ -1,6 +1,7 @@
 """
 module level constants
 """
+import os
 
 # Namespace at the pandas top level module where
 # extensions are managed
@@ -17,6 +18,13 @@ v = get_versions()
 __version__ = v.get("closest-tag", v["version"])
 __git_version__ = v.get("full-revisionid")
 del get_versions, v
+
+# directory where extensions are stored is relative to the 
+# location of this file
+__installed_extensions__ = os.path.join(\
+                                os.path.dirname(os.path.abspath(__file__)), 
+                                'installed_extensions')
+
 
 # return the pandas level reference where the repository is stored
 def repository():

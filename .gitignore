@@ -105,3 +105,6 @@ venv.bak/
 
 # tarball store
 pdext_tarballs/
+
+# installed extensions
+src/pdext/installed_extensions/*.py
