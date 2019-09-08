@@ -15,7 +15,7 @@ PIP_UNINSTALL := pip uninstall -y
 FIND_LATEST_FILE := -type f -printf '%T@ %p\n' | sort -n | tail -1 | cut -f2- -d" "
 TEST_SUITE := $(MAKEFILE_DIR)/tests
 
-CURRENT_VERSION := $(shell python -c 'from pdext._version import get_versions; v = get_versions();print(v.get("closest-tag", v["version"]))')
+CURRENT_VERSION := $(shell python -c 'from src.pdext._version import get_versions; v = get_versions();print(v.get("closest-tag", v["version"]))')
 ifndef VERSION 
 VERSION := $(CURRENT_VERSION)
 endif

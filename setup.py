@@ -13,4 +13,5 @@ setup(
         'pandas', 
         'numpy', 
     ],
+    include_package_data=True
     )

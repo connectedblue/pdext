@@ -1,6 +1,7 @@
 import pytest
 
 from pdext import *
+import pdext
 
 from test_data import *
 
@@ -23,7 +24,7 @@ def test_single_extension_function(df_A):
     assert df_A.new_col.sum() == 4*df_A.shape[0]
 
 def test_extension_documentation(df_A):
-    usage = 'USAGE: df.{}.extension_function(value)'.format(__df_ext__) 
+    usage = 'USAGE: df.{}.extension_function(value)'.format(pdext.__df_ext__) 
     assert usage in df_ext(df_A).extension_function.__doc__
 
 def test_remove_extension(df_A):

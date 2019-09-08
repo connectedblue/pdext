@@ -28,6 +28,4 @@ from .register_extensions import *
 # The recommended way to call the package is 
 #    from pdext import *
 # Expose the following symbols when called this way
-__all__ =  ['pd', 'np',
-            '__pd_ext__', '__df_ext__', 
-            '__version__', '__git_version__']
+__all__ =  ['pd', 'np',]

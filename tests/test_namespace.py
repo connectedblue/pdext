@@ -1,6 +1,8 @@
+import os
 import pytest
 
 from pdext import *
+import pdext
 
 from test_data import *
 
@@ -31,10 +33,12 @@ def test_pd_namespace():
     getattr(pd, __test_pd_ext__)
 
 def test_pdext_constants():
-    assert __df_ext__ == __test_df_ext__
-    assert __pd_ext__ == __test_pd_ext__
+    assert pdext.__df_ext__ == __test_df_ext__
+    assert pdext.__pd_ext__ == __test_pd_ext__
     
 
+def test_installed_extension_dir_present():
+    assert os.path.isdir(sym.__installed_extensions__)
         
         
 
