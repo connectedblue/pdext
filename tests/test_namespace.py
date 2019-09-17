@@ -37,8 +37,8 @@ def test_pdext_constants():
     assert pdext.__pd_ext__ == __test_pd_ext__
     
 
-def test_installed_extension_dir_present():
-    assert os.path.isdir(sym.__installed_extensions__)
+# def test_installed_extension_dir_present():
+#     assert os.path.isdir(sym.__installed_extensions__)
         
         
 

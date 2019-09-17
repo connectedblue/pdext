@@ -12,6 +12,22 @@ class extension_repository(object):
     def __init__(self):
         self.clear()
         self.load_extensions()
+
+    def install_extension(external_obj, *extension_names):
+        """
+        Installs an extension from an external object into
+        the internal package configuration
+        Input:
+            external_obj -- can be a function object, python file, system
+                            directory, local package, installed package
+            extension_names -- list of string names of the extensions which
+                               are inside the object
+                               (Note: not present is external_obj is a
+                                function object)
+        Output:
+            None -- this package repository is updated with details
+        """
+        
     
     def add_extension(self, func, save=True):
         self._registered_functions[func.__name__] = func

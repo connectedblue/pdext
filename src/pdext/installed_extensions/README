@@ -1,1 +1,11 @@
-This is where installed extensions are saved
+This is where the locations of installed extensions are saved in a config file
+
+Example structure of YAML file:
+
+            repositories:
+            - name: user
+            location: ~/.pdext
+            - name: shared
+            location: /opt/data/.pdext
+            default_repository: user
+

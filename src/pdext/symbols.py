@@ -12,6 +12,10 @@ __pd_ext__ = 'ext'
 __df_ext__ = 'ext'
 
 
+# Name of collection that extensions are placed in if
+# none specified by the user
+__default_collection__ = '__no_collection'
+
 # Set the current version number
 from ._version import get_versions
 v = get_versions()
@@ -23,7 +27,8 @@ del get_versions, v
 # location of this file
 __installed_extensions__ = os.path.join(\
                                 os.path.dirname(os.path.abspath(__file__)), 
-                                'installed_extensions')
+                                'installed_extensions',
+                                'locations.yml')
 
 
 # return the pandas level reference where the repository is stored
