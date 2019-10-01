@@ -83,6 +83,25 @@ def test_collection_across_repos_extension_clash(pdext_with_loaded_testpackages,
     assert 'circumference2_from_radius' in df_X
     assert 'circumference2_from_diameter' not in df_X
 
+def test_standalone_py_extension_file(pdext_with_loaded_testpackages,df_X):
+    pd_ext, df_ext = pdext_with_loaded_testpackages
+    # test1 is the default repository
+    pd_ext.new_search_order(['test1', 'test2'])
+
+    # get the extension to test
+    ext = df_ext(df_X)
+
+    # Call the collection specific extensions
+    radius = ext.singlepy.calculate_circumference_from_radius('numbers')
+    diameter = ext.singlepy.calculate_circumference_from_diameter('numbers')
+    assert 'circumference3_from_radius' in df_X
+    assert 'circumference3_from_diameter' in df_X
+
+    assert 'circumference2_from_radius' not in df_X
+    assert 'circumference2_from_diameter' not in df_X
+    assert 'circumference1_from_radius' not in df_X
+    assert 'circumference1_from_diameter' not in df_X
+
 
 def test_remove_repo(pdext_with_loaded_testpackages,df_X):
     pd_ext, df_ext = pdext_with_loaded_testpackages

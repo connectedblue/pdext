@@ -36,8 +36,9 @@ deploy: build
 
 clean:
 	-rm -rf dist src/pdext.egg-info  __pycache__ .pytest_cache src/pdext/installed_extensions/*.py
+	-cp src/pdext/installed_extensions/locations.yml.save src/pdext/installed_extensions/locations.yml
 
-test: install
+test: clean install
 	-cd /tmp && pytest $(PYTEST_FLAGS) $(TEST_SUITE)
 
 ifdef TARBALL

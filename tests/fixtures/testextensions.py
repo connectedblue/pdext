@@ -12,3 +12,7 @@ def testpackage1():
 @pytest.fixture(scope='session')
 def testpackage2():
     yield os.path.join(test_package_dir, 'package2')
+
+@pytest.fixture(scope='session')
+def testpackage3():
+    yield os.path.join(test_package_dir, 'package3.py')

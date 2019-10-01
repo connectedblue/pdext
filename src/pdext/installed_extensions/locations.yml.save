@@ -1,0 +1,4 @@
+default_repository: user
+repositories:
+- location: ~/.pdext
+  name: user

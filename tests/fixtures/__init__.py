@@ -5,7 +5,7 @@ __exports = {
 '.testrepos' : ['two_test_session_repos', 'no_repo_defined',
                 'pdext_with_loaded_testpackages'],
 '.testdataframes' : ['df_A', 'df_X'],
-'.testextensions' : ['testpackage1', 'testpackage2'],
+'.testextensions' : ['testpackage1', 'testpackage2', 'testpackage3'],
 '.helpers' : ['temp_session_directory', 'temp_module_directory'],
 }
 

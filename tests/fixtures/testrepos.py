@@ -11,13 +11,9 @@ from pdext.symbols import df_ext, repository
 from .helpers import save_current_installed_extensions, make_test_repos, \
                      temp_session_directory, temp_module_directory
 
-#from .testextensions import testpackage1, testpackage2
-
-
-
 @pytest.fixture(scope='module')
 def pdext_with_loaded_testpackages(temp_session_directory, 
-                                   testpackage1, testpackage2):
+                                   testpackage1, testpackage2, testpackage3):
     """
     This fixture provides an imported pdext module pre configured
     with all the test packages, divided into various collections
@@ -57,8 +53,9 @@ def pdext_with_loaded_testpackages(temp_session_directory,
         pd_ext.install_extension('calculate_circumference_from_diameter', testpackage1, repository_name='test2',  collection='circle4')
         pd_ext.install_extension('calculate_circumference_from_radius', testpackage2, repository_name='test2', collection='circle4')
 
-
-
+        # install extensions from a single file into a separate collection
+        pd_ext.install_extension('calculate_circumference_from_radius', testpackage3, repository_name='test1', collection='singlepy')
+        pd_ext.install_extension('calculate_circumference_from_diameter', testpackage3, repository_name='test1',  collection='singlepy')
 
         yield pd_ext, df_ext
     repository().build_extension_collections()

@@ -2,6 +2,7 @@ import os, yaml, shutil, glob, sys
 
 from .symbols import __installed_extensions__, __default_collection__
 from .extension import Extension
+from .staged_install_files import staged_install_files
 
 class extension_repository(object):
     """
@@ -27,21 +28,22 @@ class extension_repository(object):
         Adds extensions into the repository
         Input:
             name -- string name of extension 
-            extension_files -- directory containing all the files needed
+            extension_files -- location of all the files needed
                                for that extension.  There must be a function
                                with the extension name in one of the .py
-                               files in that directory
+                               files
             collection -- the collection namespace to be used 
             repository_name -- the repository to install the extension into
                                If none specified, then the default is used
         """
         if repository_name is None:
             repository_name = self.default_repository
-        extension_location = os.path.join(self.repository_path(repository_name),
-                                          collection, name)
-        Extension(extension_location).install(os.path.expanduser(extension_files))
+        with staged_install_files(extension_files) as install_dir:
+            extension_location = os.path.join(self.repository_path(repository_name),
+                                              collection, name)
+            Extension(extension_location).install(install_dir)
         self.build_extension_collections()
-    
+
     def build_extension_collections(self):
         """
         Create a nested dictionary of function objects of the form
