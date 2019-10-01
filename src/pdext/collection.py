@@ -16,8 +16,8 @@ class ExtensionCollection(object):
         Input:
             df -- the dataframe object that the extensions will operate
                   on
-            extensions -- a dictionary of the form:L
-                            {extension_name: extension_func_object}
+            extensions -- a dictionary of the form:
+                            {extension_name: Extension instance}
         """
         # Save the dataframe that the collection was instantiated with
         self.df = df
@@ -28,7 +28,7 @@ class ExtensionCollection(object):
         Any attribute call to this object is to retrieve an extension
         """
         if func in self.extensions:
-            func = self.extensions[func]
+            func = self.extensions[func].get_extension()
             @wraps(func)
             def extension(*args, **kwargs):
                 result = func(self.df, *args, **kwargs)

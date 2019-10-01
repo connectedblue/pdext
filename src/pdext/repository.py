@@ -1,7 +1,7 @@
 import os, yaml, shutil, glob, sys
-from importlib import import_module, invalidate_caches
 
 from .symbols import __installed_extensions__, __default_collection__
+from .extension import Extension
 
 class extension_repository(object):
     """
@@ -39,42 +39,9 @@ class extension_repository(object):
             repository_name = self.default_repository
         extension_location = os.path.join(self.repository_path(repository_name),
                                           collection, name)
-        # remove any old extension files and copy new ones in
-        self.remove_directory(extension_location)
-        shutil.copytree(extension_files, extension_location)
-        try:
-            self._create_init_py(name, extension_location)
-            self.build_extension_collections()
-        except:
-            self.remove_directory(extension_location)
-            raise
-
-
-    def _create_init_py(self, func, directory):
-        """
-        Looks for a py file with that contains a function name
-        and set up an __init__.py file to import that function
-        Input:
-            func -- function name that we're looking for
-            directory -- directory of files to search 
-        """
-        search_string = 'def {}'.format(func)
-        matched_file = None
-        search_files = glob.glob(os.path.join(directory, '*.py'))
-
-        for file in search_files:
-            with open(file, 'r') as f:
-                if search_string in f.read():
-                    matched_file = os.path.splitext(os.path.basename(file))[0]
-                    break
-        if matched_file is None:
-            raise ValueError('{} is not defined in extension files')
-        
-        init_py = os.path.join(directory, '__init__.py')
-        init_py_content = 'from .{} import {}\n'.format(matched_file, func)
-        with open(init_py, 'w+') as f:
-            f.write(init_py_content)
-
+        Extension(extension_location).install(os.path.expanduser(extension_files))
+        self.build_extension_collections()
+    
     def build_extension_collections(self):
         """
         Create a nested dictionary of function objects of the form
@@ -95,36 +62,22 @@ class extension_repository(object):
             for path in self.search_path:
                 extensions = os.path.join(path, collection)
                 try:
-                    sys_path = sys.path
-                    sys.path = [extensions]
                     for extension in next(os.walk(extensions))[1]:
                         if extension not in ext[collection]:
-                            # need to invalidate the import cache 
-                            # when dynamically creating new modules since
-                            # the interpreter started
-                            invalidate_caches()
+                            extension_location = os.path.join(extensions,
+                                                              extension)
                             ext[collection][extension] = \
-                                getattr(import_module(extension), extension)
+                                Extension(extension_location)
                 except StopIteration:
                     # If there are no extensions in the collection,
                     # carry on
                     continue
-                finally:
-                    sys.path = sys_path
-            
         self.extension_collections = ext  
 
     def get_extension(self, name):
         collection, name=self.parse_extension_name(name)
-        return self.extension_collections[collection][name]
-
-    # def is_extension(self, name):
-    #     collection, name=self.parse_extension_name(name)
-    #     try:
-    #         self.extensions[collection][name]
-    #         return True
-    #     except:
-    #         return False
+        ext = self.extension_collections[collection][name]
+        return ext.get_extension()
 
     def parse_extension_name(self, name):
         name = name.split('.')
@@ -189,11 +142,6 @@ class extension_repository(object):
         if not os.path.exists(directory):
             os.makedirs(directory)
     
-    @staticmethod
-    def remove_directory(directory):
-        if os.path.exists(directory):
-            shutil.rmtree(directory)
-
     def write_config_file(self):
         config = {'repositories': self.repositories,
                   'default_repository': self.default_repository}
@@ -292,6 +240,9 @@ class extension_repository(object):
         if value not in self.search_order:
             raise KeyError('{} is not a repository name'.format(value))
         self._default_repository = value
-    
+        
 
+    def set_default_repository(self, value):
+        self.default_repository = value    
+        self.write_config_file()
 

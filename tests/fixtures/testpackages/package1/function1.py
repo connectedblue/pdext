@@ -7,4 +7,4 @@ def calculate_circumference_from_radius(df, radius):
         df -- dataframe
         radius -- column name containing the radius values
     """
-    df['circumference'] = circumference(df[radius])
+    df['circumference1_from_radius'] = circumference(df[radius])

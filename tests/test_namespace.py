@@ -4,7 +4,6 @@ import pytest
 from pdext import *
 import pdext
 
-from test_data import *
 
 
 ## NB: if the extension constants ever change, the hard-coded strings

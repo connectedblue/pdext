@@ -7,4 +7,4 @@ def calculate_circumference_from_diameter(df, diameter):
         df -- dataframe
         radius -- column name containing the diameter values
     """
-    df['circumference'] = circumference(df[diameter]/2)
+    df['circumference1_from_diameter'] = circumference(df[diameter]/2)

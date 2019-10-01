@@ -4,6 +4,11 @@ PACKAGE := pdext
 EDIT := true
 TARBALL :=
 
+# allow the tests to support breakpoints
+PYTEST_FLAGS :=
+ifdef DEBUG
+PYTEST_FLAGS := -s
+endif
 
 # Convenience shortcuts
 MAKEFILE_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
@@ -33,7 +38,7 @@ clean:
 	-rm -rf dist src/pdext.egg-info  __pycache__ .pytest_cache src/pdext/installed_extensions/*.py
 
 test: install
-	-cd /tmp && pytest $(TEST_SUITE)
+	-cd /tmp && pytest $(PYTEST_FLAGS) $(TEST_SUITE)
 
 ifdef TARBALL
 install: deploy install_tarball
