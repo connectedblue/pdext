@@ -3,7 +3,6 @@ A container object to manage a group of extensions under the
 same namespace (called a collection) for a particular dataframe
 """
 from functools import wraps
-import inspect
 
 import pandas as pd
 
@@ -33,22 +32,6 @@ class ExtensionCollection(object):
             def extension(*args, **kwargs):
                 result = func(self.df, *args, **kwargs)
                 return result
-            self._update_func_doc(extension)
             return extension
         else:
             raise AttributeError('{} is not a valid extension'.format(func))
-    
-    @staticmethod
-    def _update_func_doc(func):
-        func_name = func.__name__
-        sig = inspect.signature(func)
-        doc = func.__doc__
-        params = list(sig.parameters)
-        first_arg = params[0]
-        other_args = ', '.join(params[1:])
-        args = first_arg + other_args
-        doc += '\nUSAGE: {first_arg}.ext.{func_name}({other_args})'\
-                .format(first_arg=first_arg,
-                        func_name=func_name,
-                        other_args=other_args)
-        func.__doc__ = doc
