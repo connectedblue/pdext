@@ -39,7 +39,7 @@ def staged_install_files(extension_files_location):
     extension_files = os.path.expanduser(extension_files_location)
 
     # check if location is directory
-    location_type = get_location_type(extension_files)
+    location_type = _get_location_type(extension_files)
     if location_type == 'local_directory':
         shutil.copytree(extension_files, tmp_install_dir) 
     if location_type == 'single_py_file':
@@ -52,7 +52,7 @@ def staged_install_files(extension_files_location):
     yield tmp_install_dir
     shutil.rmtree(tmp_install_root)
 
-def get_location_type(location):
+def _get_location_type(location):
     if os.path.isdir(location):
         return 'local_directory'
     if os.path.exists(location) and location.endswith('.py'):

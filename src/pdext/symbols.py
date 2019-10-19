@@ -36,6 +36,10 @@ def repository():
     import pandas as pd
     return getattr(pd, __pd_ext__)
 
+# and an alternative name which is more intuitive
+def pd_ext():
+    return repository()
+
 # return a dataframe level reference from where the extensions
 # are executed
 def df_ext(df=None):

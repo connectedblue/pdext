@@ -35,7 +35,13 @@ def save_current_installed_extensions():
         f, tmp_file = tempfile.mkstemp()
         shutil.move(sym.__installed_extensions__, tmp_file)
         yield 
+        # restore original file and rebuild the collections
         shutil.move(tmp_file, sym.__installed_extensions__)
+        sym.pd_ext()._build_extension_collections()
+    else:
+        # copy the backup version of the config file and try again
+        shutil.copy(sym.__installed_extensions__+'.save', sym.__installed_extensions__)
+        save_current_installed_extensions()
 
 
 def make_test_repos(repo, root_dir):
@@ -55,9 +61,10 @@ def make_test_repos(repo, root_dir):
     test_dirs = {k:test_dirs[k] for k in reversed(list(test_dirs.keys()))}
     for name, dir in test_dirs.items():
         #adding a test location should recreate the directory
-        repo.add_location(name, dir)
+        repo.add_repository(name, dir)
     # make sure that the user directory is removed
     repo.default_repository = 'test1'
-    repo.remove_location('user')
+    repo.remove_repository('user')
 
+    return test_dirs
 

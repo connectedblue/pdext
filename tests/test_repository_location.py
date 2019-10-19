@@ -32,31 +32,31 @@ def test_adding_and_changing_default(no_repo_defined):
     repo = repo()
 
     #adding a test location should recreate the directory
-    repo.add_location('test', test_dir, beginning=True)
+    repo.add_repository('test', test_dir, beginning=True)
     assert os.path.exists(test_dir)
     
-    assert repo.search_order == ['test','user']
+    assert repo._search_order == ['test','user']
     assert repo.default_repository=='user'
     # check it has removed correctly
-    repo.remove_location('test')
-    assert repo.search_order == ['user']
+    repo.remove_repository('test')
+    assert repo._search_order == ['user']
     repo, test_dir = no_repo_defined
     repo = repo()
     assert len(repo.repositories)==1
     # Add in again, this time make it default
-    repo.add_location('test', test_dir, beginning=False,
+    repo.add_repository('test', test_dir, beginning=False,
                       default=True)
-    assert repo.search_order == ['user', 'test']
-    assert repo.search_path[1] == test_dir
+    assert repo._search_order == ['user', 'test']
+    assert repo._search_path[1] == test_dir
     assert repo.default_repository=='test'
 
 def test_error_cases(no_repo_defined):
     repo, test_dir = no_repo_defined
     repo = repo()
     with pytest.raises(ValueError):
-         repo.remove_location('test')
+         repo.remove_repository('test')
     with pytest.raises(KeyError):
-         repo.remove_location('xxx')
+         repo.remove_repository('xxx')
     with pytest.raises(KeyError):
          repo.default_repository='xxx'
     with pytest.raises(ValueError):

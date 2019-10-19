@@ -5,7 +5,7 @@ from pdext import pd
 
 def test_dataframe(data):
     # Pick up currently defined extensions
-    pd.ext.build_extension_collections()
+    pd.ext._build_extension_collections()
     return pd.DataFrame(data)
 
 @pytest.fixture

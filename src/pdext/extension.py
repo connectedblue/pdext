@@ -32,7 +32,7 @@ import os, hashlib, glob, shutil, sys, inspect
 
 from importlib import import_module, invalidate_caches
 
-from .symbols import __df_ext__
+from .symbols import __df_ext__, __default_collection__
 
 class Extension(object):
 
@@ -41,9 +41,10 @@ class Extension(object):
 
         if not os.path.isdir(self.path):
             os.makedirs(self.path)
-            #raise ValueError('{} needs to be a directory to create an extension'\
-            #                 .format(self.path))
+
         self.name = os.path.basename(self.path)
+        self.collection = os.path.basename(os.path.split(self.path)[0])
+        self.is_collection = (self.collection != __default_collection__)
         self._module = hashlib.sha1(bytes(self.path, 'utf-8')).hexdigest()
         self._module_path = os.path.join(self.path, self._module)
         
@@ -100,25 +101,33 @@ class Extension(object):
         finally:
             sys.path = sys_path
         
+        self._set_extension_signature(ext)
         self._update_func_doc(ext)
         return ext
 
-    @staticmethod
-    def _update_func_doc(func):
+    def _update_func_doc(self, func):
         """
         Additional text is added to the documentation of the
         extension to show how the user should call it
         """
+        doc = func.__doc__
+
+        doc += '\nUSAGE: {}'\
+                .format(self.extension_signature)
+        func.__doc__ = doc
+    
+    def _set_extension_signature(self,func):
         func_name = func.__name__
         sig = inspect.signature(func)
-        doc = func.__doc__
         params = list(sig.parameters)
         first_arg = params[0]
         other_args = ', '.join(params[1:])
         args = first_arg + other_args
-        doc += '\nUSAGE: {first_arg}.{ext}.{func_name}({other_args})'\
-                .format(first_arg=first_arg,
-                        ext=__df_ext__,
+        collection = ''
+        if self.is_collection:
+            collection = '.{}'.format(self.collection)
+        self.extension_signature = 'df.{ext}{collection}.{func_name}({other_args})'\
+                .format(ext=__df_ext__,
+                        collection=collection,
                         func_name=func_name,
                         other_args=other_args)
-        func.__doc__ = doc

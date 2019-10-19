@@ -6,7 +6,8 @@ __exports = {
                 'pdext_with_loaded_testpackages'],
 '.testdataframes' : ['df_A', 'df_X'],
 '.testextensions' : ['testpackage1', 'testpackage2', 'testpackage3'],
-'.helpers' : ['temp_session_directory', 'temp_module_directory'],
+'.helpers' : ['temp_session_directory', 'temp_module_directory',
+              'save_current_installed_extensions', 'make_test_repos'],
 }
 
 from importlib import import_module

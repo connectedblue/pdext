@@ -1,7 +1,19 @@
 import sys
 
-from pdext.symbols import df_ext
-import pdext
+from pdext.symbols import df_ext, __df_ext__
+
+
+"""
+This set of tests ensures that the install_extension
+methods work as a unit test on the ExtensionRepository class
+
+To ensure that extensions can be installed correctly
+through the pd.ext user interface, the tests in
+test_pdext_install_extension will be run
+
+"""
+
+
 
 def test_install(two_test_session_repos, testpackage1):
     repo = two_test_session_repos
@@ -16,14 +28,14 @@ def test_install(two_test_session_repos, testpackage1):
 # First check that the installed functions work correctly as functions
 def test_package1func1(two_test_session_repos, df_A):
     repo = two_test_session_repos
-    f = repo.get_extension('calculate_circumference_from_radius')
+    f = repo._get_extension_from_collection('calculate_circumference_from_radius')
     assert 'circumference1_from_radius' not in df_A
     f(df_A, 'numbers')
     assert 'circumference1_from_radius' in df_A
 
 def test_package1func2(two_test_session_repos, df_A):
     repo = two_test_session_repos
-    f = repo.get_extension('calculate_circumference_from_diameter')
+    f = repo._get_extension_from_collection('calculate_circumference_from_diameter')
     assert 'circumference1_from_diameter' not in df_A
     f(df_A, 'numbers')
     assert 'circumference1_from_diameter' in df_A
@@ -37,5 +49,5 @@ def test_dfext_package1func1(df_X):
     ext('numbers')
     assert 'circumference1_from_radius' in df_X
     # Has the docstring pulled through correctly?
-    usage = 'USAGE: df.{}.calculate_circumference_from_radius(radius)'.format(pdext.__df_ext__) 
+    usage = 'USAGE: df.{}.calculate_circumference_from_radius(radius)'.format(__df_ext__) 
     assert usage in ext.__doc__

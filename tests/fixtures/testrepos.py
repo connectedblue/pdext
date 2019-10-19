@@ -5,7 +5,7 @@ import os, shutil, tempfile
 import pytest
 
 from pdext import pd
-from pdext.repository import extension_repository
+from pdext.repository import ExtensionRepository
 from pdext.symbols import df_ext, repository
 
 from .helpers import save_current_installed_extensions, make_test_repos, \
@@ -58,13 +58,12 @@ def pdext_with_loaded_testpackages(temp_session_directory,
         pd_ext.install_extension('calculate_circumference_from_diameter', testpackage3, repository_name='test1',  collection='singlepy')
 
         yield pd_ext, df_ext
-    repository().build_extension_collections()
 
 @pytest.fixture(scope='module')
 def two_test_session_repos(temp_module_directory):
     """
-    This fixture provides an instantiated extension_repository
-    class object to allow a test to define any repositoy location
+    This fixture provides an instantiated ExtensionRepository
+    class object to allow a test to define any repository location
     required.
 
     Any existing yaml file is preserved and replaced after the 
@@ -76,16 +75,15 @@ def two_test_session_repos(temp_module_directory):
     """
     # Create a test repo for the whole duration of tests
     with save_current_installed_extensions():
-        test_repo = extension_repository()
+        test_repo = ExtensionRepository()
         make_test_repos(test_repo, temp_module_directory)
         yield test_repo
-    repository().build_extension_collections()
 
 
 @pytest.fixture(scope='module')
 def no_repo_defined(temp_module_directory):
     """
-    This fixture provides an uninstantiated extension_repository
+    This fixture provides an uninstantiated ExtensionRepository
     class object to allow a test to define any repository location
     required.
 
@@ -97,7 +95,6 @@ def no_repo_defined(temp_module_directory):
         temp_module_directory 
     """
     with save_current_installed_extensions():
-        yield extension_repository, temp_module_directory
-    repository().build_extension_collections()
+        yield ExtensionRepository, temp_module_directory
 
 

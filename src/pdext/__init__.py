@@ -19,8 +19,8 @@ import numpy as np
 from .symbols import __pd_ext__, __df_ext__, __version__, __git_version__
 
 # Configure the repository at the pandas level
-from .repository import extension_repository
-setattr(pd, __pd_ext__, extension_repository())
+from .repository import ExtensionRepository
+setattr(pd, __pd_ext__, ExtensionRepository())
 
 # configure extensions on dataframes
 from .register_extensions import ExtensionManager
