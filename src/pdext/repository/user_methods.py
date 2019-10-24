@@ -21,14 +21,14 @@ class user_methods(object):
     namespace clashes are resolved using the repository search order
     which can also be specified by the user.
     """
-    def install_extension(self, name, extension_files,
+    def install_extension(self, name, extension_location,
                           collection=__default_collection__,
                           repository_name=None):
         """
         Adds extensions into the repository
         Input:
-            name -- string name of extension 
-            extension_files -- location of all the files needed
+            name -- string name of extension, or a list of extension names
+            extension_location -- location of all the files needed
                                for that extension.  There must be a function
                                with the extension name in one of the .py
                                files at that location
@@ -46,12 +46,15 @@ class user_methods(object):
             repository_name -- the repository to install the extension into
                                If none specified, then the default is used
         """
+        if type(name)==str:
+            name = [name]
         if repository_name is None:
             repository_name = self.default_repository
-        with staged_install_files(extension_files) as install_dir:
-            extension_location = os.path.join(self._repository_path(repository_name),
-                                              collection, name)
-            Extension(extension_location).install(install_dir)
+        with staged_install_files(extension_location) as install_dir:
+            for ext in name:
+                extension_location = os.path.join(self._repository_path(repository_name),
+                                                  collection, ext)
+                Extension(extension_location).install(install_dir)
         self._build_extension_collections()
 
     

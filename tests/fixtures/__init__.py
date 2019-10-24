@@ -7,6 +7,7 @@ __exports = {
 '.testdataframes' : ['df_A', 'df_X'],
 '.testextensions' : ['testpackage1', 'testpackage2', 'testpackage3'],
 '.helpers' : ['temp_session_directory', 'temp_module_directory',
+              'temp_function_directory', 
               'save_current_installed_extensions', 'make_test_repos'],
 }
 

@@ -22,6 +22,12 @@ def temp_module_directory():
     yield tmp_dir
     shutil.rmtree(tmp_dir)
 
+@pytest.fixture
+def temp_function_directory():
+    tmp_dir = tempfile.mkdtemp()
+    yield tmp_dir
+    shutil.rmtree(tmp_dir)
+
 
 
 # A context manager that takes care of safely saving the current

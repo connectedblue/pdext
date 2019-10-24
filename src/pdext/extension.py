@@ -28,7 +28,8 @@ and the sys.path needs to be aware of the original filesystem path
 No object outside this class needs to be concerned with this internal
 layout and access mechanism
 """
-import os, hashlib, glob, shutil, sys, inspect
+import os, hashlib, shutil, sys, inspect
+from pathlib import Path
 
 from importlib import import_module, invalidate_caches
 
@@ -70,12 +71,16 @@ class Extension(object):
         """
         search_string = 'def {}'.format(self.name)
         matched_file = None
-        search_files = glob.glob(os.path.join(self._module_path, '*.py'))
-
+        search_files = Path(self._module_path).rglob('*.py')
+        # if self.name == 'calculate_circumference_from_radius_nested':
+        #     breakpoint()
         for file in search_files:
             with open(file, 'r') as f:
                 if search_string in f.read():
-                    matched_file = os.path.splitext(os.path.basename(file))[0]
+                    d = [i for i in file.parts \
+                            if i not in Path(self._module_path).parts]
+                    d = d[:-1] + [os.path.splitext(os.path.basename(d[-1]))[0]]
+                    matched_file = '.'.join(d)
                     break
         if matched_file is None:
             raise ValueError('{} is not defined in extension files')

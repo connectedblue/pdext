@@ -15,7 +15,7 @@ def test_install_from_github(temp_module_directory, df_X):
         # Check default latest version is downloaded and executes correctly
         assert hasattr(dfext, 'circle_calculations') == False
         # two repos installing into the default
-        pdext.install_extension('circle_calculations', 'github:connectedblue/pdext_collection/demo')
+        pdext.install_extension('circle_calculations', 'github:connectedblue/pdext_collection')
         assert hasattr(dfext, 'circle_calculations') == True
         # Test execution of the extension
         assert 'circumference' not in df_X
