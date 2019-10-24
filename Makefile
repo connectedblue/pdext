@@ -4,10 +4,16 @@ PACKAGE := pdext
 EDIT := true
 TARBALL :=
 
+# check if all tests should be run
+ifdef TESTALL
+PYTEST_SKIP := 
+else
+PYTEST_SKIP := --skip_this
+endif
 # allow the tests to support breakpoints
-PYTEST_FLAGS :=
+PYTEST_FLAGS := $(PYTEST_SKIP)
 ifdef DEBUG
-PYTEST_FLAGS := -s
+PYTEST_FLAGS := -s $(PYTEST_SKIP)
 endif
 
 # Convenience shortcuts

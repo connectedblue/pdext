@@ -14,8 +14,9 @@ So the process for uploading will be common:
 So to extend the locations supported, only steps two and three need
 to be altered
 """
-import os, shutil, tempfile
+import os, shutil, tempfile, re, urllib
 from contextlib import contextmanager
+from zipfile import ZipFile
  
  
 @contextmanager
@@ -25,9 +26,7 @@ def staged_install_files(extension_files_location):
     them to a temporary directory for installation. Delete the
     temp directory after
     Input:
-        extension_files_location -- string of the form:
-                                        <directory name>
-                                        <single .py file>
+        extension_files_location -- in format specifed in install_extension()
     Yields:
         tmp_install_dir -- temporary directory with extension files
     
@@ -36,10 +35,10 @@ def staged_install_files(extension_files_location):
     """
     tmp_install_root = tempfile.mkdtemp()
     tmp_install_dir = os.path.join(tmp_install_root, 'files')
-    extension_files = os.path.expanduser(extension_files_location)
 
     # check if location is directory
-    location_type = _get_location_type(extension_files)
+    location_type, extension_files = _parse_location(extension_files_location, 
+                                                     tmp_install_root)
     if location_type == 'local_directory':
         shutil.copytree(extension_files, tmp_install_dir) 
     if location_type == 'single_py_file':
@@ -52,9 +51,54 @@ def staged_install_files(extension_files_location):
     yield tmp_install_dir
     shutil.rmtree(tmp_install_root)
 
-def _get_location_type(location):
-    if os.path.isdir(location):
-        return 'local_directory'
-    if os.path.exists(location) and location.endswith('.py'):
-        return 'single_py_file'
-    return 'unsupported'
+def _parse_location(location, temp_dir):
+    """
+    Format for the location type is specified in the
+    install_extension doc string
+
+    """
+    location_type = 'local_directory'
+
+    if location.startswith('github:'):
+        extension_files = _get_files_from_github(location, temp_dir)
+    else:
+        # location is on the filesystem
+        extension_files = os.path.expanduser(location)
+        if os.path.exists(extension_files) and extension_files.endswith('.py'):
+            location_type = 'single_py_file'
+        if not os.path.exists(extension_files):
+            location_type = 'unsupported'
+    
+    return location_type, extension_files
+
+def _get_files_from_github(location, temp_dir):
+    # location format: github:username/repo[@branch/tag][/path/to/directory]
+    try:
+        username, repo, path = re.match('^github:([^/]+)/([^/]+)(.*)',
+                                        location).groups()
+    except AttributeError:
+        raise ValueError('Unable to parse github location: {}'.format(location))
+    
+    github_root = os.path.join(temp_dir, 'github')
+    os.makedirs(github_root)
+    zip_file = os.path.join(github_root, 'download.zip')
+    extract_dir = os.path.join(github_root, 'extract')
+    repo = repo.split('@')
+    if len(repo)==1:
+        repo = repo[0]
+        branch = 'master'
+    else:
+        branch = repo[1]
+        repo = repo[0]
+
+    path = os.path.join('{repo}-{branch}'.format(repo=repo, branch=branch),
+                        path[1:])
+    url='https://github.com/{username}/{repo}/archive/{branch}.zip'\
+            .format(username=username, repo=repo, branch=branch)
+    urllib.request.urlretrieve(url, zip_file)
+
+    with ZipFile(zip_file) as zip:
+        for f in zip.namelist():
+            if path in f:
+                zip.extract(f, extract_dir)
+    return os.path.join(extract_dir, path)

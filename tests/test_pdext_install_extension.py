@@ -1,5 +1,3 @@
-#import os, shutil, tempfile
-
 import pytest
 
 from pdext.symbols import pd_ext, df_ext

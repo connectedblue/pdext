@@ -31,7 +31,17 @@ class user_methods(object):
             extension_files -- location of all the files needed
                                for that extension.  There must be a function
                                with the extension name in one of the .py
-                               files
+                               files at that location
+                Format options for extension files:
+                    <directory name on local file system>
+                    <.py file  name on local file system>
+                    github:username/repo[@branch/tag][/path/to/directory]
+                            where repo is a public repo on github for username
+                            latest commit on master is the default unless a
+                            specific branch or tag is optionally provided
+                            The extension files are assumed to be at the root
+                            of the repo unless a path is optionally provided
+                            
             collection -- the collection namespace to be used 
             repository_name -- the repository to install the extension into
                                If none specified, then the default is used
