@@ -27,11 +27,13 @@ class ExtensionCollection(object):
         Any attribute call to this object is to retrieve an extension
         """
         if func in self.extensions:
-            func = self.extensions[func].get_extension()
-            @wraps(func)
+            ext = self.extensions[func].get_extension()
+            enabled = self.extensions[func].enabled
+            @wraps(ext)
             def extension(*args, **kwargs):
-                result = func(self.df, *args, **kwargs)
-                return result
+                if enabled:
+                    return ext(self.df, *args, **kwargs)
+                return None
             return extension
         else:
             raise AttributeError('{} is not a valid extension'.format(func))

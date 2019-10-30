@@ -145,3 +145,35 @@ class user_methods(object):
         info += "\nFor help on individual extensions, use help(df.ext.<extension name>)"
         print(info)
         return
+
+    def disable_extension(self, name, *, _enabled=False):
+        """
+        Disable an extension
+        Input:
+            name -- string name of extension (including collection if there is one)
+        """
+        # locate extension to be enabled/disabled
+        collection, name=self._parse_extension_name(name)
+        ext = self._get_extension_object(name, collection)
+        ext.enabled = _enabled
+        ext.reload()
+    
+    def enable_extension(self, name):
+        """
+        Enable an extension
+        Input:
+            name -- string name of extension (including collection if there is one)
+        """
+        self.disable_extension(name, _enabled=True)
+
+    def remove_extension(self, name):
+        """
+        Permanently remove an extension from the repository
+        Input:
+            name -- string name of extension (including collection if there is one)
+        """
+        # locate extension to be removed
+        collection, name=self._parse_extension_name(name)
+        ext = self._get_extension_object(name, collection)
+        ext.remove()
+        del(self.extension_collections[collection][name])

@@ -43,7 +43,7 @@ class extension_management(object):
 
     def _get_extension_from_collection(self, name):
         collection, name=self._parse_extension_name(name)
-        ext = self.extension_collections[collection][name]
+        ext = self._get_extension_object(name, collection)
         return ext.get_extension()
 
     def _parse_extension_name(self, name):
@@ -59,3 +59,18 @@ class extension_management(object):
             collection = __default_collection__
             extension_name = name[0]
         return collection, extension_name
+
+    def _get_extension_object(self, name, collection):
+        try:
+            ext = self.extension_collections[collection][name]
+            # Make sure it's imported from disk
+            ext.reload()
+        except KeyError:
+            if collection == __default_collection__:
+                collection = ''
+            else:
+                collection = collection + '.'
+            raise KeyError('Extension {}{} - doesnt exist'\
+                            .format(collection, name))
+        return ext
+
