@@ -33,18 +33,18 @@ def test_install_from_github(temp_module_directory, df_X):
         assert hasattr(dfext, 'test1') == False
         # two repos installing into the default
         pdext.install_extension('circle_calculations', 
-                                'github:connectedblue/pdext_collection@pdext_test/demo',
-                                collection='test1')
-        assert hasattr(dfext, 'test1') == True
+                                'github:connectedblue/pdext_collection@pdext_test',
+                                collection='demo')
+        assert hasattr(dfext, 'demo') == True
         # Test execution of the extension
         assert 'circumference' not in df_X.columns
         assert 'area' not in df_X.columns
-        dfext.test1.circle_calculations('numbers')
+        dfext.demo.circle_calculations('numbers')
         assert 'circumference' in df_X.columns
         assert 'area' in df_X.columns
         # Test correct version of the docstring
-        assert 'Calculates the circumference' not in dfext.test1.circle_calculations.__doc__
-        assert 'Version: test branch' in dfext.test1.circle_calculations.__doc__
+        assert 'Calculates the circumference' not in dfext.demo.circle_calculations.__doc__
+        assert 'Version: test branch' in dfext.demo.circle_calculations.__doc__
         # Clean up
         df_X = df_X.drop(columns=['circumference', 'area'])
         dfext = df_ext(df_X)
@@ -53,7 +53,7 @@ def test_install_from_github(temp_module_directory, df_X):
         assert hasattr(dfext, 'test2') == False
         # two repos installing into the default
         pdext.install_extension('circle_calculations', 
-                                'github:connectedblue/pdext_collection@pdext_test_tag/demo',
+                                'github:connectedblue/pdext_collection@pdext_test_tag',
                                 collection='test2')
         assert hasattr(dfext, 'test2') == True
         # Test execution of the extension

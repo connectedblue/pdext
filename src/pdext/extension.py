@@ -111,8 +111,10 @@ class Extension(object):
         for file in search_files:
             with open(file, 'r') as f:
                 if search_string in f.read():
-                    d = [i for i in file.parts \
-                            if i not in Path(self._module_path).parts]
+                    # Need to get the parts of the filename that are
+                    # relative to the module directory (ie after the
+                    # module path)
+                    d = list(file.parts[len(Path(self._module_path).parts):])
                     d = d[:-1] + [os.path.splitext(os.path.basename(d[-1]))[0]]
                     matched_file = '.'.join(d)
                     break
