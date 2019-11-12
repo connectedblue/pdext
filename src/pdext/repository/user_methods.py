@@ -50,11 +50,11 @@ class user_methods(object):
             name = [name]
         if repository_name is None:
             repository_name = self.default_repository
-        with staged_install_files(extension_location) as install_dir:
+        with staged_install_files(extension_location) as install_from_dir:
             for ext in name:
-                extension_location = os.path.join(self._repository_path(repository_name),
+                extension_path = os.path.join(self._repository_path(repository_name),
                                                   collection, ext)
-                Extension(extension_location).install(install_dir)
+                Extension(extension_path).install(install_from_dir, extension_location, repository_name)
         self._build_extension_collections()
 
     
@@ -120,7 +120,7 @@ class user_methods(object):
         # Get the extension names under each collection
         def ext_info(x):
             x.get_extension()
-            return (x.name, x.extension_signature)
+            return (x.extension_name, x.extension_signature)
         extensions = {c:[ext_info(ext[e]) for e in ext] \
                         for c, ext in self.extension_collections.items()}
         num_extensions = sum([len(v) for v in extensions.values()])
@@ -177,3 +177,18 @@ class user_methods(object):
         ext = self._get_extension_object(name, collection)
         ext.remove()
         del(self.extension_collections[collection][name])
+
+    def reinstall_extension(self, name):
+        """
+        Re-install an extension from the original source
+        Input:
+            name -- string name of extension (including collection if there is one)
+        """
+        # locate extension to be removed
+        collection, name=self._parse_extension_name(name)
+        ext = self._get_extension_object(name, collection)
+        install_args = ext.install_args
+        self.remove_extension(name)
+        self.install_extension(**install_args)
+        
+    
