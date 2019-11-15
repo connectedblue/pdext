@@ -1,6 +1,5 @@
-
 import pytest
-from pdext.symbols import __df_ext__, __install_timestamp_fmt__, __default_collection__
+from pdext.symbols import __df_ext__
 
 def test_enable_disable_extension(pdext_with_loaded_testpackages,df_X):
     pd_ext, df_ext = pdext_with_loaded_testpackages
@@ -59,38 +58,6 @@ def test_enable_disable_extension(pdext_with_loaded_testpackages,df_X):
     # re-active for next tests
     pd_ext.enable_extension('circle1.calculate_circumference_from_diameter')
     pd_ext.enable_extension('calculate_circumference_from_radius')
-
-def test_reinstall_extension(pdext_with_loaded_testpackages,df_X):
-    pd_ext, df_ext = pdext_with_loaded_testpackages
-
-    assert 'circumference1_from_radius' not in df_X.columns
-    assert 'circumference1_from_diameter' not in df_X.columns
-    # get the extension to test
-    ext = df_ext(df_X)
-    ext.calculate_circumference_from_radius('numbers')
-    ext.calculate_circumference_from_diameter('numbers')
-    assert 'circumference1_from_radius' in df_X.columns
-    assert 'circumference1_from_diameter' in df_X.columns
-    df_X = df_X.drop(columns=['circumference1_from_radius', 'circumference1_from_diameter'])
-    ext = df_ext(df_X)
-
-    # time of install 
-    ext_object = pd_ext.extension_collections[__default_collection__]\
-                                             ['calculate_circumference_from_radius']
-    first_install_time = ext_object.ext_info.install_time
-
-    # reinstall radius
-    pd_ext.reinstall_extension('calculate_circumference_from_radius')
-
-    ext.calculate_circumference_from_radius('numbers')
-    ext.calculate_circumference_from_diameter('numbers')
-    assert 'circumference1_from_radius' in df_X.columns
-    assert 'circumference1_from_diameter' in df_X.columns
-    df_X = df_X.drop(columns='circumference1_from_diameter')
-    ext = df_ext(df_X)
-
-    assert ext_object.ext_info.is_earlier_than(first_install_time) == False
-
 
 def test_remove_extension(pdext_with_loaded_testpackages,df_X):
     pd_ext, df_ext = pdext_with_loaded_testpackages

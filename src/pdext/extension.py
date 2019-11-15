@@ -28,14 +28,24 @@ and the sys.path needs to be aware of the original filesystem path
 No object outside this class needs to be concerned with this internal
 layout and access mechanism
 """
-import os, shutil, sys, inspect
+import os, hashlib, shutil, sys, inspect
 from pathlib import Path
 
 from importlib import import_module, invalidate_caches, reload
 
-from .symbols import __df_ext__
-from .extension_info import ExtensionInfo
+from .symbols import __df_ext__, __default_collection__
 
+init_py = """\
+from .{extension_file} import {extension_name}\n
+
+enabled = {enabled}
+
+init_values = {{
+    'extension_file': '{extension_file}',
+    'extension_name': '{extension_name}',
+    'enabled': {enabled},
+}}
+"""
 class Extension(object):
 
     def __init__(self, extension_path):
@@ -44,19 +54,28 @@ class Extension(object):
             extension_path -- string of the form:
                                 /path/to/repo/collection/extension
         """
-        self.ext_info = ExtensionInfo(extension_path)
+        self.path = extension_path
+        if not os.path.isdir(self.path):
+            os.makedirs(self.path)
+
+        # extract the extension attributes from the path
+        self.name = os.path.basename(self.path)
+        self.collection = os.path.basename(os.path.split(self.path)[0])
+        self.is_collection = (self.collection != __default_collection__)
+        
+        # The module is given a unique name to avoid import problems
+        # if the same extension name exists in different collections
+        self._module = hashlib.sha1(bytes(self.path, 'utf-8')).hexdigest()
+        self._module_path = os.path.join(self.path, self._module)
 
         # These attributes are not set until import
         self._imported_module = None
-        self._extension_signature = None
+        self._enabled = None
         
-    def install(self, extension_files, extension_location, repository_name, enabled=True):
+    def install(self, extension_files, enabled=True):
         # remove any old extension files and copy new ones in
-        self.ext_info.install_location = extension_location
-        self.ext_info.install_repository = repository_name
-        self.ext_info.install_files = extension_files
         self._remove_module_path()
-        shutil.copytree(extension_files, self.ext_info.module_path)
+        shutil.copytree(extension_files, self._module_path)
         try:
             self._find_extension_file()
             self.enabled=enabled
@@ -65,63 +84,84 @@ class Extension(object):
             raise
     
     def remove(self):
-        shutil.rmtree(self.ext_info.path)
+        shutil.rmtree(self.path)
 
     @property
     def enabled(self):
-        return self.ext_info.enabled
+        return self._enabled
     
     @enabled.setter
     def enabled(self, value):
-        self.ext_info.enabled = value
+        self._enabled = value
+        self._create_init_py()
+
 
     def _remove_module_path(self):
-        if os.path.exists(self.ext_info.module_path):
-            shutil.rmtree(self.ext_info.module_path)
+        if os.path.exists(self._module_path):
+            shutil.rmtree(self._module_path)
 
     def _find_extension_file(self):
         """
         Looks for a py file with that contains a function name the
         same as the extension name
         """
-        search_string = 'def {}'.format(self.ext_info.name)
+        search_string = 'def {}'.format(self.name)
         matched_file = None
-        search_files = Path(self.ext_info.module_path).rglob('*.py')
+        search_files = Path(self._module_path).rglob('*.py')
         for file in search_files:
             with open(file, 'r') as f:
                 if search_string in f.read():
                     # Need to get the parts of the filename that are
                     # relative to the module directory (ie after the
                     # module path)
-                    d = list(file.parts[len(Path(self.ext_info.module_path).parts):])
+                    d = list(file.parts[len(Path(self._module_path).parts):])
                     d = d[:-1] + [os.path.splitext(os.path.basename(d[-1]))[0]]
                     matched_file = '.'.join(d)
                     break
         if matched_file is None:
             raise ValueError('{} is not defined in extension files')
-        self.ext_info.matched_file = matched_file
+        self.matched_file = matched_file
     
+    def _create_init_py(self):
+        """
+        set up an __init__.py file to import the extension and 
+        manage other settings
+        """
+        with open(self.init_py_location, 'w+') as f:
+            f.write(self._rendered_init_py)
+
+    @property
+    def _rendered_init_py(self):
+        return init_py.format(extension_file=self.matched_file, 
+                              extension_name=self.name,
+                              enabled=self.enabled)
+
+    @property
+    def init_py_location(self):
+        return os.path.join(self._module_path, '__init__.py')
+
     def get_extension(self):
-        func = getattr(self.imported_module, self.ext_info.name)
-        self.extension_signature = func
-        return func
+        ext = getattr(self.imported_module, self.name)
+        self._set_extension_signature(ext)
+        self._update_func_doc(ext)
+        return ext
     
     @property
     def imported_module(self):
         if self._imported_module is None:
             sys_path = sys.path
-            sys.path.append(self.ext_info.path)
+            sys.path.append(self.path)
             # need to invalidate the import cache 
             # when dynamically creating new modules since
             # the interpreter started
             invalidate_caches()
             try:
-                self._imported_module = import_module(self.ext_info.module)
+                self._imported_module = import_module(self._module)
             except (AttributeError, ModuleNotFoundError) as e:
-                raise AttributeError('Extension {} not installed'.format(self.ext_info.name))
+                raise AttributeError('Extension {} not installed'.format(self.name))
             finally:
                 sys.path = sys_path
-            self.ext_info.initialise_from_imported_module(self._imported_module)
+            self._initialise_from_imported_module()
         return self._imported_module
 
     def reload(self):
@@ -129,43 +169,11 @@ class Extension(object):
             self.imported_module
         else:
             reload(self._imported_module)
-            self.ext_info.initialise_from_imported_module(self._imported_module)
-        
-    # Some properties required outside the class
-    @property
-    def extension_name(self):
-        return self.ext_info.name
+            self._initialise_from_imported_module()
     
-    @property
-    def install_args(self):
-        return {
-            'name': self.ext_info.name, 
-            'extension_location': self.ext_info.install_location,
-            'collection': self.ext_info.collection,
-            'repository_name': self.ext_info.install_repository,
-        }
-    
-    @property
-    def extension_signature(self):
-        return self._extension_signature
-
-    @extension_signature.setter
-    def extension_signature(self,func):
-        func_name = func.__name__
-        sig = inspect.signature(func)
-        params = list(sig.parameters)
-        first_arg = params[0]
-        other_args = ', '.join(params[1:])
-        args = first_arg + other_args
-        collection = ''
-        if self.ext_info.is_collection:
-            collection = '.{}'.format(self.ext_info.collection)
-        self._extension_signature = 'df.{ext}{collection}.{func_name}({other_args})'\
-                .format(ext=__df_ext__,
-                        collection=collection,
-                        func_name=func_name,
-                        other_args=other_args)
-        self._update_func_doc(func)
+    def _initialise_from_imported_module(self):
+        self._enabled = getattr(self.imported_module, 'init_values')['enabled']
+        self.matched_file = getattr(self.imported_module, 'init_values')['extension_file']
 
     def _update_func_doc(self, func):
         """
@@ -177,3 +185,19 @@ class Extension(object):
         doc += '\nUSAGE: {}'\
                 .format(self.extension_signature)
         func.__doc__ = doc
+    
+    def _set_extension_signature(self,func):
+        func_name = func.__name__
+        sig = inspect.signature(func)
+        params = list(sig.parameters)
+        first_arg = params[0]
+        other_args = ', '.join(params[1:])
+        args = first_arg + other_args
+        collection = ''
+        if self.is_collection:
+            collection = '.{}'.format(self.collection)
+        self.extension_signature = 'df.{ext}{collection}.{func_name}({other_args})'\
+                .format(ext=__df_ext__,
+                        collection=collection,
+                        func_name=func_name,
+                        other_args=other_args)
