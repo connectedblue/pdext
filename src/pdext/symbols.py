@@ -30,6 +30,8 @@ __installed_extensions__ = os.path.join(\
                                 'installed_extensions',
                                 'locations.yml')
 
+# Suffix for import extension files
+__import_file_ext__ = '.pdext'
 
 # return the pandas level reference where the repository is stored
 def repository():

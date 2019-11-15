@@ -12,6 +12,7 @@ A new extension function func can be added via
 """
 
 # Import libraries as standard shortcuts
+import sys
 import pandas as pd
 import numpy as np
 
@@ -24,6 +25,10 @@ setattr(pd, __pd_ext__, ExtensionRepository())
 
 # configure extensions on dataframes
 from .register_extensions import ExtensionManager
+
+# configure the extension importer
+from .extension_importer import ExtensionImporter
+sys.meta_path.append(ExtensionImporter())
 
 # The recommended way to call the package is 
 #    from pdext import *

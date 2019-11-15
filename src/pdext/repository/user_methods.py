@@ -1,4 +1,6 @@
 import os
+from warnings import warn
+import logging
 
 from ..symbols import __default_collection__
 from ..extension import Extension
@@ -120,7 +122,12 @@ class user_methods(object):
         # Get the extension names under each collection
         def ext_info(x):
             x.get_extension()
-            return (x.name, x.extension_signature)
+            if x.imported_ok:
+                sig = x.extension_signature
+            else:
+                sig = "{}  - Currently doesn't work because {}"\
+                        .format(x.extension_signature,x.pdext_fix_advice)
+            return (x.name, sig)
         extensions = {c:[ext_info(ext[e]) for e in ext] \
                         for c, ext in self.extension_collections.items()}
         num_extensions = sum([len(v) for v in extensions.values()])
@@ -177,3 +184,42 @@ class user_methods(object):
         ext = self._get_extension_object(name, collection)
         ext.remove()
         del(self.extension_collections[collection][name])
+
+    def import_extension(self, extension_location, name):
+        """
+        Imports extensions that don't already exist into the default repo
+        Input:
+            extension_location -- location of all the files needed
+                               for that extension.  There must be a function
+                               with the extension name in one of the .py
+                               files at that location
+                Format options for extension files:
+                    <directory name on local file system>
+                    <.py file  name on local file system>
+                    github:username/repo[@branch/tag][/path/to/directory]
+                            where repo is a public repo on github for username
+                            latest commit on master is the default unless a
+                            specific branch or tag is optionally provided
+                            The extension files are assumed to be at the root
+                            of the repo unless a path is optionally provided
+            name -- string name of extension (including collection if required)
+                    where it should be installed              
+        """
+        collection, ext_name=self._parse_extension_name(name)
+        try:
+            ext = self._get_extension_object(ext_name, collection)
+        except KeyError:
+            self.install_extension(name=ext_name, 
+                                   extension_location=extension_location,
+                                   collection=collection,
+                                   repository_name=None)
+            # check if there are any dependency warnings by importing again
+            self.import_extension(extension_location, name)
+        
+        # Check if there are any dependencies in the extension
+        # code and warn the user if so
+        except ModuleNotFoundError as e:
+            try:
+                logging.warning(e.pdext_err) 
+            except:
+                raise e

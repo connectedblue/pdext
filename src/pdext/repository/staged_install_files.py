@@ -37,19 +37,21 @@ def staged_install_files(extension_files_location):
     tmp_install_dir = os.path.join(tmp_install_root, 'files')
 
     # check if location is directory
-    location_type, extension_files = _parse_location(extension_files_location, 
-                                                     tmp_install_root)
-    if location_type == 'local_directory':
-        shutil.copytree(extension_files, tmp_install_dir) 
-    if location_type == 'single_py_file':
-        os.makedirs(tmp_install_dir)
-        shutil.copy(extension_files, tmp_install_dir)
-    if location_type == 'unsupported':
-        raise ValueError('Invalid location of extension files: {}'\
-                         .format(extension_files))
-    
-    yield tmp_install_dir
-    shutil.rmtree(tmp_install_root)
+    try:
+        location_type, extension_files = _parse_location(extension_files_location, 
+                                                        tmp_install_root)
+        if location_type == 'local_directory':
+            shutil.copytree(extension_files, tmp_install_dir) 
+        if location_type == 'single_py_file':
+            os.makedirs(tmp_install_dir)
+            shutil.copy(extension_files, tmp_install_dir)
+        if location_type == 'unsupported':
+            raise ValueError('Invalid location of extension files: {}'\
+                            .format(extension_files))
+        
+        yield tmp_install_dir
+    finally:
+        shutil.rmtree(tmp_install_root)
 
 def _parse_location(location, temp_dir):
     """
@@ -58,7 +60,7 @@ def _parse_location(location, temp_dir):
 
     """
     location_type = 'local_directory'
-
+    
     if location.startswith('github:'):
         extension_files = _get_files_from_github(location, temp_dir)
     else:

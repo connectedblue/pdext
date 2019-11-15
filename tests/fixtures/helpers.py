@@ -38,12 +38,14 @@ def temp_function_directory():
 def save_current_installed_extensions():
     # save any existing config file to a temporary file
     if os.path.isfile(sym.__installed_extensions__):
-        f, tmp_file = tempfile.mkstemp()
-        shutil.move(sym.__installed_extensions__, tmp_file)
-        yield 
-        # restore original file and rebuild the collections
-        shutil.move(tmp_file, sym.__installed_extensions__)
-        sym.pd_ext()._build_extension_collections()
+        try:
+            f, tmp_file = tempfile.mkstemp()
+            shutil.move(sym.__installed_extensions__, tmp_file)
+            yield
+        finally: 
+            # restore original file and rebuild the collections
+            shutil.move(tmp_file, sym.__installed_extensions__)
+            sym.pd_ext()._build_extension_collections()
     else:
         # copy the backup version of the config file and try again
         shutil.copy(sym.__installed_extensions__+'.save', sym.__installed_extensions__)
@@ -70,7 +72,10 @@ def make_test_repos(repo, root_dir):
         repo.add_repository(name, dir)
     # make sure that the user directory is removed
     repo.default_repository = 'test1'
-    repo.remove_repository('user')
+    try:
+        repo.remove_repository('user')
+    except KeyError:
+        pass
 
     return test_dirs
 

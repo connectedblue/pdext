@@ -71,6 +71,7 @@ class Extension(object):
         # These attributes are not set until import
         self._imported_module = None
         self._enabled = None
+        self._func_doc = None
         
     def install(self, extension_files, enabled=True):
         # remove any old extension files and copy new ones in
@@ -141,9 +142,39 @@ class Extension(object):
         return os.path.join(self._module_path, '__init__.py')
 
     def get_extension(self):
-        ext = getattr(self.imported_module, self.name)
-        self._set_extension_signature(ext)
-        self._update_func_doc(ext)
+        try:
+            ext = getattr(self.imported_module, self.name)
+            self._set_extension_signature(ext)
+            self._update_func_doc(ext)
+            self.imported_ok = True
+
+        except ModuleNotFoundError as e:
+            # Create a dummy extension
+            class pdext_extension(object): 
+                """
+                EXTENSION CANNOT BE LOADED
+
+                There is a import module dependency within the
+                extension code that will need to be installed
+                before this extension can be imported correctly:
+
+                """
+                def __call__(self, *args, **kwargs):
+                    import logging
+                    logging.warning(self.__pdext_err__)
+            
+            ext = pdext_extension()
+            ext.__name__ = self.name
+            self.pdext_fix_advice = 'module:  ' + e.name + '  needs to be installed\n'
+            ext.__doc__ += self.pdext_fix_advice
+            ext.__pdext_err__ = e.pdext_err
+
+            # set parameters to enable extension to be called
+            # like a normally imported one
+            self._enabled = True
+            self.extension_signature = 'df.{ext_name}()'\
+                .format(ext_name=self._full_extension_name(include_ext=True))
+            self.imported_ok = False
         return ext
     
     @property
@@ -157,8 +188,13 @@ class Extension(object):
             invalidate_caches()
             try:
                 self._imported_module = import_module(self._module)
-            except (AttributeError, ModuleNotFoundError) as e:
+            except AttributeError:
                 raise AttributeError('Extension {} not installed'.format(self.name))
+            except ModuleNotFoundError as e:
+                e.pdext_err = "pdext extension {} requires library {} which is not installed"\
+                                          .format(self._full_extension_name(), e.name)
+                e.args += (e.pdext_err,)
+                raise e
             finally:
                 sys.path = sys_path
             self._initialise_from_imported_module()
@@ -180,11 +216,12 @@ class Extension(object):
         Additional text is added to the documentation of the
         extension to show how the user should call it
         """
-        doc = func.__doc__
+        if self._func_doc is None:
+            self._func_doc = func.__doc__
 
-        doc += '\nUSAGE: {}'\
-                .format(self.extension_signature)
-        func.__doc__ = doc
+            self._func_doc += '\nUSAGE: {}'\
+                                .format(self.extension_signature)
+        func.__doc__ = self._func_doc
     
     def _set_extension_signature(self,func):
         func_name = func.__name__
@@ -193,11 +230,16 @@ class Extension(object):
         first_arg = params[0]
         other_args = ', '.join(params[1:])
         args = first_arg + other_args
-        collection = ''
-        if self.is_collection:
-            collection = '.{}'.format(self.collection)
-        self.extension_signature = 'df.{ext}{collection}.{func_name}({other_args})'\
-                .format(ext=__df_ext__,
-                        collection=collection,
-                        func_name=func_name,
+        
+        self.extension_signature = 'df.{ext_name}({other_args})'\
+                .format(ext_name=self._full_extension_name(include_ext=True),
                         other_args=other_args)
+    
+    def _full_extension_name(self, include_ext=False):
+        name = ''
+        if include_ext:
+            name += '{ext}.'.format(ext=__df_ext__)
+        if self.is_collection:
+            name += '{collection}.'.format(collection=self.collection)
+        return name + '{func_name}'.format(func_name=self.name)
+

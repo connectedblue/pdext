@@ -109,3 +109,6 @@ pdext_tarballs/
 # installed extensions
 src/pdext/installed_extensions/*.py
 locations.yml
+
+# .pdext files
+*.pdext
