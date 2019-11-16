@@ -14,7 +14,6 @@ A new extension function func can be added via
 # Import libraries as standard shortcuts
 import sys
 import pandas as pd
-import numpy as np
 
 # get module constants
 from .symbols import __pd_ext__, __df_ext__, __version__, __git_version__
@@ -33,4 +32,4 @@ sys.meta_path.append(ExtensionImporter())
 # The recommended way to call the package is 
 #    from pdext import *
 # Expose the following symbols when called this way
-__all__ =  ['pd', 'np',]
+__all__ =  ['pd',]
