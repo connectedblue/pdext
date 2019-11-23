@@ -32,6 +32,11 @@ __installed_extensions__ = os.path.join(\
 
 # Suffix for import extension files
 __import_file_ext__ = '.pdext'
+# seperator in import extension files
+__import_file_sep__ = '->'
+# extension spec line format
+__import_file_line_spec__ = '{}{}{}'.format('{}',__import_file_sep__,'{}')
+
 # format of install timestamp in __init__.py
 __install_timestamp_fmt__ = '%Y-%m-%dT%H:%M:%SZ'
 

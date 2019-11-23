@@ -23,13 +23,13 @@ from .repository import ExtensionRepository
 setattr(pd, __pd_ext__, ExtensionRepository())
 
 # configure extensions on dataframes
-from .register_extensions import ExtensionManager
+from .extensions import ExtensionManager
 
 # configure the extension importer
-from .extension_importer import ExtensionImporter
+from .extensions import ExtensionImporter
 sys.meta_path.append(ExtensionImporter())
 
 # The recommended way to call the package is 
-#    from pdext import *
-# Expose the following symbols when called this way
+#    from pdext import pd
+# Expose the following symbols when called using *
 __all__ =  ['pd',]

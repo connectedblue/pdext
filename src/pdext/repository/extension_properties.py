@@ -1,8 +1,5 @@
 import os
 
-from ..extension import Extension
-
-
 class extension_properties(object):
     """
     Some common class attributes used by the various

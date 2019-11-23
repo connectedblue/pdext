@@ -33,7 +33,7 @@ from pathlib import Path
 
 from importlib import import_module, invalidate_caches, reload
 
-from .symbols import __df_ext__
+from ..symbols import __df_ext__
 from .extension_info import ExtensionInfo
 
 class Extension(object):
@@ -51,20 +51,6 @@ class Extension(object):
         self._enabled = None
         self._func_doc = None
         self._extension_signature = None
-        
-    def install(self, extension_files, extension_location, repository_name, enabled=True):
-        # remove any old extension files and copy new ones in
-        self.ext_info.install_location = extension_location
-        self.ext_info.install_repository = repository_name
-        self.ext_info.install_files = extension_files
-        self._remove_module_path()
-        shutil.copytree(extension_files, self.ext_info.module_path)
-        try:
-            self._find_extension_file()
-            self.enabled=enabled
-        except:
-            self._remove_module_path()
-            raise
     
     def remove(self):
         shutil.rmtree(self.ext_info.path)
@@ -77,11 +63,11 @@ class Extension(object):
     def enabled(self, value):
         self.ext_info.enabled = value
 
-    def _remove_module_path(self):
+    def remove_module_path(self):
         if os.path.exists(self.ext_info.module_path):
             shutil.rmtree(self.ext_info.module_path)
 
-    def _find_extension_file(self):
+    def find_extension_file(self):
         """
         Looks for a py file with that contains a function name the
         same as the extension name
@@ -191,10 +177,7 @@ class Extension(object):
     @property
     def install_args(self):
         return {
-            'name': self.ext_info.name, 
-            'extension_location': self.ext_info.install_location,
-            'collection': self.ext_info.collection,
-            'repository_name': self.ext_info.install_repository,
+            'extension_spec': self.ext_info.install_location,
         }
     
     @property

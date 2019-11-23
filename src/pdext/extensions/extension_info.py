@@ -2,7 +2,7 @@ import os, hashlib
 from datetime import datetime
 from pathlib import Path
 
-from .symbols import __default_collection__, __install_timestamp_fmt__
+from ..symbols import __default_collection__, __install_timestamp_fmt__
 
 class ExtensionInfo(object):
     """
@@ -36,9 +36,14 @@ init_values = {{
                                 /path/to/repo/collection/extension
         """
         self.path = extension_path
-        if not os.path.isdir(self.path):
-            os.makedirs(self.path)
+        #        if os.path.isdir(self.path):
+        self.initialise_extension_layout()
 
+    def create_extension_path(self):
+        os.makedirs(self.path)
+        self.initialise_extension_layout()
+    
+    def initialise_extension_layout(self):
         # extract the extension attributes from the path
         self.name = os.path.basename(self.path)
         self.collection = os.path.basename(os.path.split(self.path)[0])

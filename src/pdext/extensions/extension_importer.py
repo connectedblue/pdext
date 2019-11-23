@@ -1,6 +1,6 @@
 import os, sys, types
 
-from .symbols import __import_file_ext__, repository
+from ..symbols import __import_file_ext__, repository
 
 class ExtensionImporter(object):
     """
@@ -21,11 +21,12 @@ class ExtensionImporter(object):
         If an extension file is found, then the extensions are loaded 
         at this point
         """
-        self.import_file = os.path.join(*(fullname.split('.'))) + __import_file_ext__
-        if os.path.exists(self.import_file):
-            pd_ext = repository()
-            for extension_location, name in self.parse_import_file():
-                pd_ext.import_extension(extension_location, name)
+        import_file = os.path.join(*(fullname.split('.'))) + __import_file_ext__
+        if os.path.exists(import_file):
+            with open(import_file) as stream:
+                import_content = stream.read()
+                pd_ext = repository()
+                pd_ext.import_extension(import_content)
             return self
 
     def load_module(self, fullname):
@@ -70,13 +71,5 @@ class ExtensionImporter(object):
             raise e
         return None
 
-    def parse_import_file(self):
-        with open(self.import_file) as stream:
-            lines = stream.readlines()
-            # remove comments and return only lines with two arguments
-            lines = [l for l in lines if not l.startswith('#')]
-            lines = [l.split() for l in lines if len(l.split())==2]
-            for l in lines:
-                yield l[0], l[1]
 
 

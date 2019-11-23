@@ -4,9 +4,9 @@ Set up extension namespace and create shortcts
 from functools import wraps, reduce
 import inspect
 
-import pandas as pd
+from pdext import pd
 
-from .symbols import __df_ext__, repository, __default_collection__
+from ..symbols import __df_ext__, repository, __default_collection__
 from .collection import ExtensionCollection
 
 @pd.api.extensions.register_dataframe_accessor(__df_ext__)

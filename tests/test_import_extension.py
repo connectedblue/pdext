@@ -1,9 +1,8 @@
 import os
 import pytest
 
-from pdext.symbols import pd_ext, df_ext, __import_file_ext__
+from pdext.symbols import pd_ext, df_ext, __import_file_ext__, __import_file_sep__
 from fixtures.helpers import save_current_installed_extensions, make_test_repos
-
 
 def test_import_extension(temp_module_directory, df_X,testpackage1):
     # Create a test repo for the whole duration of tests
@@ -16,8 +15,8 @@ def test_import_extension(temp_module_directory, df_X,testpackage1):
         assert hasattr(dfext, 'calculate_circumference_from_radius') == False
         assert hasattr(dfext, 'test') == False
         # two repos installing into the default
-        pdext.import_extension(testpackage1, 'calculate_circumference_from_radius')
-        pdext.import_extension(testpackage1, 'test.calculate_circumference_from_diameter')
+        pdext.import_extension(testpackage1+__import_file_sep__+'calculate_circumference_from_radius')
+        pdext.import_extension(testpackage1+__import_file_sep__+'test.calculate_circumference_from_diameter')
     
         assert hasattr(dfext, 'calculate_circumference_from_radius') == True
         assert hasattr(dfext, 'test') == True
@@ -36,17 +35,22 @@ def test_import_extension(temp_module_directory, df_X,testpackage1):
         # Create an import file is the current directory
         import_file_content = """\
 # Comment to be ignored
-            {package}   imp.calculate_circumference_from_radius
-            {package}   calculate_circumference_from_diameter
-            """.format(package=testpackage1)
+            {package} {sep}  imp.calculate_circumference_from_radius
+            {package} {sep}  calculate_circumference_from_diameter
+            """.format(package=testpackage1, sep=__import_file_sep__)
         import_file_name = 'import_test' + __import_file_ext__
         with open(import_file_name, 'w') as f:
             f.writelines(import_file_content)
         
         assert hasattr(dfext, 'calculate_circumference_from_diameter') == False
         assert hasattr(dfext, 'imp') == False
+        
         # import the packages in the file
         import import_test
+        
+        # Dummy module loaded in the namespace
+        assert 'import_test' in locals()
+        assert import_test.__file__ == '<pdext import>'
 
         # clean up before completing tests
         os.remove(import_file_name)
@@ -78,7 +82,7 @@ def test_extension_dependency_not_installed(temp_module_directory, df_X,
         assert hasattr(dfext, 'function_uses_external_package_not_installed') == False
         assert len(caplog.records)==0
         # installing into the default - check for warning during install
-        pdext.import_extension(testpackage1, 'function_uses_external_package_not_installed')
+        pdext.import_extension(testpackage1+__import_file_sep__+'function_uses_external_package_not_installed')
         # function exists but it is a dummy one
         assert hasattr(dfext, 'function_uses_external_package_not_installed') == True
         assert 'EXTENSION CANNOT BE LOADED' in dfext.function_uses_external_package_not_installed.__doc__

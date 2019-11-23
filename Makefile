@@ -10,12 +10,20 @@ PYTEST_SKIP :=
 else
 PYTEST_SKIP := --skip_this
 endif
+ifdef TESTSUB
+PYTEST_SUBSET := -k $(TESTSUB)
+else
+PYTEST_SUBSET :=
+endif
 # allow the tests to support breakpoints
-PYTEST_FLAGS := $(PYTEST_SKIP)
+
 ifdef DEBUG
-PYTEST_FLAGS := -s $(PYTEST_SKIP)
+PYTEST_DEBUG := -s
+else
+PYTEST_DEBUG :=
 endif
 
+PYTEST_FLAGS := $(PYTEST_SKIP) $(PYTEST_DEBUG) $(PYTEST_SUBSET)
 # Convenience shortcuts
 MAKEFILE_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 

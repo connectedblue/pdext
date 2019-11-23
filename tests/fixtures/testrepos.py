@@ -6,7 +6,7 @@ import pytest
 
 from pdext import pd
 from pdext.repository import ExtensionRepository
-from pdext.symbols import df_ext, repository
+from pdext.symbols import df_ext, repository, __import_file_line_spec__
 
 from .helpers import save_current_installed_extensions, make_test_repos, \
                      temp_session_directory, temp_module_directory
@@ -30,34 +30,47 @@ def pdext_with_loaded_testpackages(temp_session_directory,
     """
     # Create a test repo for the whole duration of tests
     with save_current_installed_extensions():
-        pd_ext = repository()
-        make_test_repos(pd_ext, temp_session_directory)
+        pdext = repository()
+        make_test_repos(pdext, temp_session_directory)
+
+        def spec(test_package,func):
+            return __import_file_line_spec__.format(test_package, func)
+        
         # two repos installing into the default
-        pd_ext.install_extension('calculate_circumference_from_radius', testpackage1, repository_name='test1')
-        pd_ext.install_extension('calculate_circumference_from_diameter', testpackage1, repository_name='test1')
-        pd_ext.install_extension('calculate_circumference_from_radius', testpackage2, repository_name='test2')
-        pd_ext.install_extension('calculate_circumference_from_diameter', testpackage2, repository_name='test2')
+        pdext.set_default_repository('test1')
+        pdext.import_extension(spec(testpackage1,'calculate_circumference_from_radius'))
+        pdext.import_extension(spec(testpackage1,'calculate_circumference_from_diameter'))
+        pdext.set_default_repository('test2')
+        pdext.import_extension(spec(testpackage2,'calculate_circumference_from_radius'))
+        pdext.import_extension(spec(testpackage2,'calculate_circumference_from_diameter'))
         
         # each repo has its own namespace
-        pd_ext.install_extension('calculate_circumference_from_radius', testpackage1, repository_name='test1', collection='circle1')
-        pd_ext.install_extension('calculate_circumference_from_diameter', testpackage1, repository_name='test1',  collection='circle1')
-        pd_ext.install_extension('calculate_circumference_from_radius', testpackage2, repository_name='test2', collection='circle2')
-        pd_ext.install_extension('calculate_circumference_from_diameter', testpackage2, repository_name='test2', collection='circle2')
+        pdext.set_default_repository('test1')
+        pdext.import_extension(spec(testpackage1,'circle1.calculate_circumference_from_radius'))
+        pdext.import_extension(spec(testpackage1,'circle1.calculate_circumference_from_diameter'))
+        pdext.set_default_repository('test2')
+        pdext.import_extension(spec(testpackage2,'circle2.calculate_circumference_from_radius'))
+        pdext.import_extension(spec(testpackage2,'circle2.calculate_circumference_from_diameter'))
 
         # both functions in the same namespace but different repos
-        pd_ext.install_extension('calculate_circumference_from_radius', testpackage1, repository_name='test1', collection='circle3')
-        pd_ext.install_extension('calculate_circumference_from_diameter', testpackage1, repository_name='test2',  collection='circle3')
+        pdext.set_default_repository('test1')
+        pdext.import_extension(spec(testpackage1,'circle3.calculate_circumference_from_radius'))
+        pdext.set_default_repository('test2')
+        pdext.import_extension(spec(testpackage1,'circle3.calculate_circumference_from_diameter'))
 
         # each function in the same namespace, but a clash with a name in a different repo
-        pd_ext.install_extension('calculate_circumference_from_radius', testpackage1, repository_name='test1', collection='circle4')
-        pd_ext.install_extension('calculate_circumference_from_diameter', testpackage1, repository_name='test2',  collection='circle4')
-        pd_ext.install_extension('calculate_circumference_from_radius', testpackage2, repository_name='test2', collection='circle4')
+        pdext.set_default_repository('test1')
+        pdext.import_extension(spec(testpackage1,'circle4.calculate_circumference_from_radius'))
+        pdext.set_default_repository('test2')
+        pdext.import_extension(spec(testpackage1,'circle4.calculate_circumference_from_diameter'))
+        pdext.import_extension(spec(testpackage2,'circle4.calculate_circumference_from_radius'))
 
         # install extensions from a single file into a separate collection
-        pd_ext.install_extension('calculate_circumference_from_radius', testpackage3, repository_name='test1', collection='singlepy')
-        pd_ext.install_extension('calculate_circumference_from_diameter', testpackage3, repository_name='test1',  collection='singlepy')
+        pdext.set_default_repository('test1')
+        pdext.import_extension(spec(testpackage3,'singlepy.calculate_circumference_from_radius'))
+        pdext.import_extension(spec(testpackage3,'singlepy.calculate_circumference_from_diameter'))
 
-        yield pd_ext, df_ext
+        yield pdext, df_ext
 
 @pytest.fixture(scope='module')
 def two_test_session_repos(temp_module_directory):

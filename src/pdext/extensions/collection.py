@@ -4,9 +4,6 @@ same namespace (called a collection) for a particular dataframe
 """
 from functools import wraps
 
-import pandas as pd
-
-
 class ExtensionCollection(object):
     def __init__(self, df, extensions):
         """

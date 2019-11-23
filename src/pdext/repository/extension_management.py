@@ -1,7 +1,7 @@
 import os, sys
 
 from ..symbols import __default_collection__
-from ..extension import Extension
+from ..extensions import Extension
 
 
 class extension_management(object):
@@ -46,7 +46,8 @@ class extension_management(object):
         ext = self._get_extension_object(name, collection)
         return ext.get_extension()
 
-    def _parse_extension_name(self, name):
+    @staticmethod
+    def _parse_extension_name(name):
         name = name.split('.')
         num_levels = len(name)
         if num_levels>2:

@@ -1,10 +1,10 @@
 import sys
 
-from pdext.symbols import df_ext, __df_ext__
+from pdext.symbols import df_ext, __df_ext__, __import_file_line_spec__
 
 
 """
-This set of tests ensures that the install_extension
+This set of tests ensures that the import_extension
 methods work as a unit test on the ExtensionRepository class
 
 To ensure that extensions can be installed correctly
@@ -18,9 +18,11 @@ test_pdext_install_extension will be run
 def test_install(two_test_session_repos, testpackage1):
     repo = two_test_session_repos
     sys_path = sys.path
-    
-    repo.install_extension('calculate_circumference_from_radius', testpackage1)
-    repo.install_extension('calculate_circumference_from_diameter', testpackage1)
+
+    def spec(func):
+            return __import_file_line_spec__.format(testpackage1, func)
+    repo.import_extension(spec('calculate_circumference_from_radius'))
+    repo.import_extension(spec('calculate_circumference_from_diameter'))
 
     # check that the path hasn't been screwed around with
     assert sys.path == sys_path

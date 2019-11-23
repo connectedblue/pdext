@@ -1,7 +1,8 @@
 from datetime import datetime
 import pytest
 
-from pdext.symbols import pd_ext, df_ext, __install_timestamp_fmt__, __default_collection__
+from pdext.symbols import pd_ext, df_ext, __install_timestamp_fmt__,\
+                          __default_collection__, __import_file_line_spec__
 from fixtures.helpers import save_current_installed_extensions, make_test_repos
 
 
@@ -18,9 +19,11 @@ def test_pdext_install_and_remove_extension(temp_module_directory, df_X,
         assert hasattr(dfext, 'calculate_circumference_from_radius') == False
         assert hasattr(dfext, 'calculate_circumference_from_diameter') == False
         # two repos installing into the default
-        pdext.install_extension('calculate_circumference_from_radius', testpackage1, repository_name='test1')
-        pdext.install_extension('calculate_circumference_from_diameter', testpackage1, repository_name='test1')
-    
+        def spec(func):
+            return __import_file_line_spec__.format(testpackage1, func)
+        pdext.import_extension(spec('calculate_circumference_from_radius'))
+        pdext.import_extension(spec('calculate_circumference_from_diameter'))
+        
         assert hasattr(dfext, 'calculate_circumference_from_radius') == True
         assert hasattr(dfext, 'calculate_circumference_from_diameter') == True
 
@@ -41,8 +44,8 @@ def test_pdext_install_and_remove_extension(temp_module_directory, df_X,
         assert hasattr(dfext, 'calculate_circumference_from_diameter') == False
 
         # should install in test2 by which is now the default
-        pdext.install_extension('calculate_circumference_from_radius', testpackage2)
-        pdext.install_extension('calculate_circumference_from_diameter', testpackage2)
+        pdext.import_extension(__import_file_line_spec__.format(testpackage2, 'calculate_circumference_from_radius'))
+        pdext.import_extension(__import_file_line_spec__.format(testpackage2, 'calculate_circumference_from_diameter'))
         assert hasattr(dfext, 'calculate_circumference_from_radius') == True
         assert hasattr(dfext, 'calculate_circumference_from_diameter') == True
 
@@ -74,9 +77,12 @@ def test_multi_extension_install(temp_function_directory, df_X,testpackage1):
         assert hasattr(dfext, 'calculate_circumference_from_radius') == False
         assert hasattr(dfext, 'calculate_circumference_from_diameter') == False
         # two repos installing into the default
-        pdext.install_extension(['calculate_circumference_from_radius',
-                                 'calculate_circumference_from_diameter'], 
-                                 testpackage1)
+        spec = __import_file_line_spec__.format(testpackage1, 
+                                    'calculate_circumference_from_radius') +\
+                '\n' +\
+               __import_file_line_spec__.format(testpackage1, 
+                                    'calculate_circumference_from_diameter')
+        pdext.import_extension(spec)
     
         assert hasattr(dfext, 'calculate_circumference_from_radius') == True
         assert hasattr(dfext, 'calculate_circumference_from_diameter') == True
@@ -98,9 +104,13 @@ def test_nested_extension_install(temp_function_directory, df_X,testpackage1):
         assert hasattr(dfext, 'calculate_circumference_from_radius_nested') == False
         assert hasattr(dfext, 'calculate_circumference_from_diameter') == False
         # two extensions installing into the default
-        pdext.install_extension(['calculate_circumference_from_radius_nested',
-                                 'calculate_circumference_from_diameter'], 
-                                 testpackage1)
+        spec = __import_file_line_spec__.format(testpackage1, 
+                                    'calculate_circumference_from_radius_nested') +\
+                '\n' +\
+               __import_file_line_spec__.format(testpackage1, 
+                                    'calculate_circumference_from_diameter')
+        pdext.import_extension(spec)
+
         assert hasattr(dfext, 'calculate_circumference_from_radius_nested') == True
         assert hasattr(dfext, 'calculate_circumference_from_diameter') == True
         
