@@ -72,7 +72,7 @@ def test_multi_extension_install(temp_function_directory, df_X,testpackage1):
         # make two test repos to install extensions into
         pdext = pd_ext()
         dfext = df_ext(df_X)
-        test_repos = make_test_repos(pdext, temp_function_directory)
+        make_test_repos(pdext, temp_function_directory)
 
         assert hasattr(dfext, 'calculate_circumference_from_radius') == False
         assert hasattr(dfext, 'calculate_circumference_from_diameter') == False
@@ -99,7 +99,7 @@ def test_nested_extension_install(temp_function_directory, df_X,testpackage1):
         # make two test repos to install extensions into
         pdext = pd_ext()
         dfext = df_ext(df_X)
-        test_repos = make_test_repos(pdext, temp_function_directory)
+        make_test_repos(pdext, temp_function_directory)
 
         assert hasattr(dfext, 'calculate_circumference_from_radius_nested') == False
         assert hasattr(dfext, 'calculate_circumference_from_diameter') == False

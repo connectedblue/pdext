@@ -1,6 +1,6 @@
 import os
 
-class extension_properties(object):
+class extension_properties_mixin(object):
     """
     Some common class attributes used by the various
     class methods

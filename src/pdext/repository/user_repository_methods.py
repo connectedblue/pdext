@@ -1,6 +1,6 @@
 import os
 
-class user_repository_methods(object):
+class user_repository_methods_mixin(object):
     """
     All the methods which a user can call to manipulate 
     the repositories where extensions are stored.

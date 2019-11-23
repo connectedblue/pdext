@@ -3,7 +3,7 @@ import os, yaml
 from ..symbols import __installed_extensions__
 
 
-class config_file_management(object):
+class config_file_management_mixin(object):
     """
     All the extension repository information is stored in 
     a YAML file in the package folder for pdext

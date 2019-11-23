@@ -1,11 +1,11 @@
-import os, shutil, tempfile
+import os, shutil, tempfile, importlib
 import pytest
 
 from contextlib import contextmanager
 
 # pick out some useful constants from the package
 # so that tests don't have to re-written if they change
-import _pdext.symbols as sym
+sym = importlib.import_module('_pdext.symbols')
 
 #### HELPER FUNCTIONS USED IN FIXTURES
 
@@ -39,7 +39,7 @@ def save_current_installed_extensions():
     # save any existing config file to a temporary file
     if os.path.isfile(sym.__installed_extensions__):
         try:
-            f, tmp_file = tempfile.mkstemp()
+            _, tmp_file = tempfile.mkstemp()
             shutil.move(sym.__installed_extensions__, tmp_file)
             yield
         finally: 

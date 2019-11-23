@@ -1,7 +1,8 @@
 # Define some standard dataframe content that can
 # be used across tests
-import pytest
-import pdext as pd
+import pytest, importlib
+#import pdext as pd
+pd = importlib.import_module('pdext')
 
 def test_dataframe(data):
     # Pick up currently defined extensions

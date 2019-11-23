@@ -3,10 +3,15 @@ FIXTURE FUNCTIONS USED IN TESTS
 """
 import os, shutil, tempfile
 import pytest
+from importlib import import_module
 
 import pdext as pd
-from _pdext.repository import ExtensionRepository
-from _pdext.symbols import df_ext, repository, __import_file_line_spec__
+ExtensionRepository = import_module('_pdext.repository').ExtensionRepository
+sym = import_module('_pdext.symbols')
+df_ext = sym.df_ext 
+repository = sym.repository
+__import_file_line_spec__ = sym.__import_file_line_spec__
+
 
 from .helpers import save_current_installed_extensions, make_test_repos, \
                      temp_session_directory, temp_module_directory

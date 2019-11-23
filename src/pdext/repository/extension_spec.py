@@ -5,8 +5,8 @@ from ..symbols import __import_file_sep__, __import_file_line_spec__
 from .extension_location import ExtensionLocation
 # This is a bit messy, but the parse function is embedded into 
 # the repository class, so just extract this function out
-from .extension_management import extension_management
-_parse_extension_name = extension_management._parse_extension_name
+from .extension_management import extension_management_mixin
+_parse_extension_name = extension_management_mixin._parse_extension_name
 
 class ExtensionSpecification(object):
     """

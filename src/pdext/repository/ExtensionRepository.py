@@ -1,16 +1,16 @@
-from .extension_properties import extension_properties
-from .extension_management import extension_management
-from .config_file_management import config_file_management
-from .user_repository_methods import user_repository_methods
-from .user_extension_control_methods import user_extension_control_methods
-from .user_extension_install_methods import user_extension_install_methods
+from .extension_properties import extension_properties_mixin
+from .extension_management import extension_management_mixin
+from .config_file_management import config_file_management_mixin
+from .user_repository_methods import user_repository_methods_mixin
+from .user_extension_control_methods import user_extension_control_methods_mixin
+from .user_extension_install_methods import user_extension_install_methods_mixin
 
-class ExtensionRepository(user_repository_methods,
-                          user_extension_install_methods,
-                          user_extension_control_methods,
-                          extension_management,
-                          config_file_management,
-                          extension_properties):
+class ExtensionRepository(user_repository_methods_mixin,
+                          user_extension_install_methods_mixin,
+                          user_extension_control_methods_mixin,
+                          extension_management_mixin,
+                          config_file_management_mixin,
+                          extension_properties_mixin):
     """
     Initialise the Extension Repository and pull in the functionality via
     Mix-in classes 

@@ -4,7 +4,7 @@ from ..symbols import __default_collection__
 from ..extensions import Extension
 
 
-class extension_management(object):
+class extension_management_mixin(object):
     """
     Builds the internal structures to allow extensions to 
     be retrieved by the ExtensionManager that is plugged

@@ -11,7 +11,7 @@ def test_install_from_github(temp_module_directory, df_X, caplog):
         # make two test repos to install extensions into
         pdext = pd_ext()
         dfext = df_ext(df_X)
-        test_repos = make_test_repos(pdext, temp_module_directory)
+        make_test_repos(pdext, temp_module_directory)
 
         # capture the log record when a github archive is downloaded
         caplog.set_level(logging.INFO)
@@ -88,7 +88,7 @@ def test_multi_install_from_github(temp_module_directory, df_X, caplog):
         # make two test repos to install extensions into
         pdext = pd_ext()
         dfext = df_ext(df_X)
-        test_repos = make_test_repos(pdext, temp_module_directory)
+        make_test_repos(pdext, temp_module_directory)
 
         # capture the log record when a github archive is downloaded
         caplog.set_level(logging.INFO)

@@ -29,7 +29,7 @@ def test_import_namespaces():
 
     # and that the pdext functionality works
     assert getattr(pd, __test_pd_ext__).show_extensions() is None
-    df = pd.DataFrame()
+    df = getattr(pd, 'DataFrame')()
     assert hasattr(df, __test_df_ext__) == True
         
 

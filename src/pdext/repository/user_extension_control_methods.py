@@ -2,7 +2,7 @@ import os
 
 from ..symbols import __default_collection__
 
-class user_extension_control_methods(object):
+class user_extension_control_methods_mixin(object):
     """
     All the methods which a user can call to manipulate 
     extensions.
@@ -35,13 +35,13 @@ class user_extension_control_methods(object):
             info = "There are {} extensions installed:\n\n".format(num_extensions)
 
         if __default_collection__ in extensions:
-            for func, sig in extensions[__default_collection__]:
+            for _, sig in extensions[__default_collection__]:
                 info += "  {}\n".format(sig)
             extensions.pop(__default_collection__)
         
         for collection in extensions:
             info +='\nCollection: {}\n'.format(collection)
-            for func, sig in extensions[collection]:
+            for _ , sig in extensions[collection]:
                 info += "  {}\n".format(sig)
         info += "\nFor help on individual extensions, use help(df.ext.<extension name>)"
         print(info)

@@ -113,8 +113,8 @@ class Extension(object):
             func = pdext_extension()
             func.__name__ = self.ext_info.name
             self.pdext_fix_advice = 'module:  ' + e.name + '  needs to be installed\n'
-            func.__doc__ += self.pdext_fix_advice
-            func.__pdext_err__ = e.pdext_err
+            func.__doc__ = getattr(func, '__doc__') + self.pdext_fix_advice
+            func.__pdext_err__ = getattr(e, 'pdext_err')
 
             # set parameters to enable extension to be called
             # like a normally imported one
@@ -139,7 +139,7 @@ class Extension(object):
             except ModuleNotFoundError as e:
                 e.pdext_err = "pdext extension {} requires library {} which is not installed"\
                                           .format(self._full_extension_name(), e.name)
-                e.args += (e.pdext_err,)
+                e.args += (getattr(e, 'pdext_err'),)
                 raise e
             finally:
                 sys.path = sys_path
@@ -186,12 +186,9 @@ class Extension(object):
 
     @extension_signature.setter
     def extension_signature(self,func):
-        func_name = func.__name__
         sig = inspect.signature(func)
         params = list(sig.parameters)
-        first_arg = params[0]
         other_args = ', '.join(params[1:])
-        args = first_arg + other_args
         
         self._extension_signature = 'df.{ext_name}({other_args})'\
                 .format(ext_name=self._full_extension_name(include_ext=True),

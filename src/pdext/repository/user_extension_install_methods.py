@@ -5,7 +5,7 @@ from ..symbols import __default_collection__, __import_file_sep__
 from ..extensions import Extension
 from .extension_spec import ExtensionSpecification
 
-class user_extension_install_methods(object):
+class user_extension_install_methods_mixin(object):
     """
     All the methods which a user can call to manipulate 
     extensions.
@@ -62,7 +62,7 @@ class user_extension_install_methods(object):
             # Check if there are any dependencies in the extension
             # code and warn the user if so
             except ModuleNotFoundError as e:
-                logging.warning(e.pdext_err) 
+                logging.warning(getattr(e, 'pdext_err')) 
         
         parsed_spec.import_completed()
             
