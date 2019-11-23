@@ -5,7 +5,7 @@ from contextlib import contextmanager
 
 # pick out some useful constants from the package
 # so that tests don't have to re-written if they change
-import pdext.symbols as sym
+import _pdext.symbols as sym
 
 #### HELPER FUNCTIONS USED IN FIXTURES
 

@@ -1,7 +1,7 @@
 # Define some standard dataframe content that can
 # be used across tests
 import pytest
-from pdext import pd
+import pdext as pd
 
 def test_dataframe(data):
     # Pick up currently defined extensions

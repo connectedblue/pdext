@@ -1,5 +1,4 @@
 import os
-import logging
 
 from ..symbols import __default_collection__
 
