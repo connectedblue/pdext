@@ -112,3 +112,6 @@ locations.yml
 
 # .pdext files
 *.pdext
+
+# generated build content
+_build_info.py

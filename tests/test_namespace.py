@@ -5,8 +5,9 @@ import pytest
 ## only need to be changed in this test file.  All other tests should
 ## use the convenience symbols imported directly from the package
 
-__test_df_ext__ = 'ext'
 __test_pd_ext__ = 'ext'
+__test_df_ext__ = 'ext'
+
 
 @pytest.mark.parametrize('namespace, does_exist',[
     (__test_df_ext__, True), ('no_ext', False),

@@ -15,7 +15,7 @@ import sys
 import pandas as pd
 
 # get module constants
-from .symbols import __pd_ext__
+from .symbols import __pd_ext__, __pdext__
 
 # Configure the repository at the pandas level
 from .repository import ExtensionRepository

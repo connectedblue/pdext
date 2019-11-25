@@ -1,7 +1,7 @@
-import os
+import os, importlib
 import pytest
 
-from pdext.symbols import pd_ext, df_ext, __import_file_ext__, __import_file_sep__
+from pdext.symbols import pd_ext, df_ext, __import_file_ext__, __import_file_sep__, __pdext__
 from fixtures.helpers import save_current_installed_extensions, make_test_repos
 
 def test_import_extension(temp_module_directory, df_X,testpackage1):
@@ -46,11 +46,11 @@ def test_import_extension(temp_module_directory, df_X,testpackage1):
         assert hasattr(dfext, 'imp') == False
         
         # import the packages in the file
-        import import_test
+        import_test = importlib.import_module('import_test')
         
         # Dummy module loaded in the namespace
         assert 'import_test' in locals()
-        assert import_test.__file__ == '<pdext import>'
+        assert import_test.__file__ == '<{} import>'.format(__pdext__)
 
         # clean up before completing tests
         os.remove(import_file_name)
@@ -77,7 +77,7 @@ def test_extension_dependency_not_installed(temp_module_directory, df_X,
         # make two test repos to install extensions into
         pdext = pd_ext()
         dfext = df_ext(df_X)
-        test_repos = make_test_repos(pdext, temp_module_directory)
+        make_test_repos(pdext, temp_module_directory)
 
         assert hasattr(dfext, 'function_uses_external_package_not_installed') == False
         assert len(caplog.records)==0
@@ -90,17 +90,19 @@ def test_extension_dependency_not_installed(temp_module_directory, df_X,
         assert len(caplog.records)==1
         record = caplog.records[0]
         assert record.levelname == 'WARNING'
-        assert record.message == 'pdext extension function_uses_external_package_not_installed requires library pkg_doesnt_exist which is not installed'
+        assert 'extension function_uses_external_package_not_installed requires library pkg_doesnt_exist which is not installed'\
+               in record.message
 
         # catch warning when the function is executed also
         dfext.function_uses_external_package_not_installed()
         assert len(caplog.records)==2
         record = caplog.records[1]
         assert record.levelname == 'WARNING'
-        assert record.message == 'pdext extension function_uses_external_package_not_installed requires library pkg_doesnt_exist which is not installed'
+        assert record.message == '{} extension function_uses_external_package_not_installed requires library pkg_doesnt_exist which is not installed'\
+                                    .format(__pdext__)
 
         # Check that warning also included in the show_extensions() list
         pdext.show_extensions()
-        out, err = capsys.readouterr()
-        function_warning = "df.ext.function_uses_external_package_not_installed()  - Currently doesn't work because module:  pkg_doesnt_exist  needs to be installed"
+        out, _ = capsys.readouterr()
+        function_warning = "function_uses_external_package_not_installed()  - Currently doesn't work because module:  pkg_doesnt_exist  needs to be installed"
         assert function_warning in out

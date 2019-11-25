@@ -33,7 +33,7 @@ from pathlib import Path
 
 from importlib import import_module, invalidate_caches, reload
 
-from ..symbols import __df_ext__
+from ..symbols import __df_ext__, __pdext__
 from .extension_info import ExtensionInfo
 
 class Extension(object):
@@ -137,8 +137,8 @@ class Extension(object):
             except AttributeError:
                 raise AttributeError('Extension {} not installed'.format(self.ext_info.name))
             except ModuleNotFoundError as e:
-                e.pdext_err = "pdext extension {} requires library {} which is not installed"\
-                                          .format(self._full_extension_name(), e.name)
+                e.pdext_err = "{} extension {} requires library {} which is not installed"\
+                                .format(__pdext__, self._full_extension_name(), e.name)
                 e.args += (getattr(e, 'pdext_err'),)
                 raise e
             finally:

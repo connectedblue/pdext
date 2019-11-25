@@ -1,6 +1,6 @@
 import os, sys, types
 
-from ..symbols import __import_file_ext__, repository
+from ..symbols import __import_file_ext__, repository, __pdext__
 
 class ExtensionImporter(object):
     """
@@ -49,8 +49,8 @@ class ExtensionImporter(object):
             # `sys.modules` before executing the code inside the module (which
             # is when the "module" actually gets code inside it)
 
-            m = types.ModuleType(fullname, 'pdext extension import')
-            m.__file__ = '<pdext import>'
+            m = types.ModuleType(fullname, '{} extension import'.format(__pdext__))
+            m.__file__ = '<{} import>'.format(__pdext__)
             m.__name__ = fullname
             m.__loader__ = self
             sys.modules[fullname] = m

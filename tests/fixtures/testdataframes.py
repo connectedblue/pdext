@@ -1,12 +1,13 @@
 # Define some standard dataframe content that can
 # be used across tests
 import pytest, importlib
-#import pdext as pd
+from pdext.symbols import pd_ext
 pd = importlib.import_module('pdext')
 
 def test_dataframe(data):
     # Pick up currently defined extensions
-    pd.ext._build_extension_collections()
+
+    pd_ext()._build_extension_collections()
     return pd.DataFrame(data)
 
 @pytest.fixture

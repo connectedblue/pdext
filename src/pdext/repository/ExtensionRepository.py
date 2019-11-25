@@ -18,3 +18,8 @@ class ExtensionRepository(user_repository_methods_mixin,
     def __init__(self):
         self._build_extension_collections()
 
+    @property
+    def __version__(self):
+        from ..symbols import __version__
+        return __version__
+

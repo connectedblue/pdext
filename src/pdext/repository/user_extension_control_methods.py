@@ -1,6 +1,6 @@
 import os
 
-from ..symbols import __default_collection__
+from ..symbols import __default_collection__, __pdext__, __version__, __df_ext__
 
 class user_extension_control_methods_mixin(object):
     """
@@ -13,6 +13,8 @@ class user_extension_control_methods_mixin(object):
     which can also be specified by the user.
     """    
     def show_extensions(self):
+        info = '{} v{}\n'.format(__pdext__, __version__)
+
         # Get the extension names under each collection
         def ext_info(x):
             x.get_extension()
@@ -26,13 +28,13 @@ class user_extension_control_methods_mixin(object):
                         for c, ext in self.extension_collections.items()}
         num_extensions = sum([len(v) for v in extensions.values()])
         if num_extensions == 0:
-            print('No extensions are installed')
+            print(info+'No extensions are installed')
             return
         
         if num_extensions==1:
-            info = "There is 1 extension installed:\n\n"
+            info += "There is 1 extension installed:\n\n"
         else:
-            info = "There are {} extensions installed:\n\n".format(num_extensions)
+            info += "There are {} extensions installed:\n\n".format(num_extensions)
 
         if __default_collection__ in extensions:
             for _, sig in extensions[__default_collection__]:
@@ -43,7 +45,8 @@ class user_extension_control_methods_mixin(object):
             info +='\nCollection: {}\n'.format(collection)
             for _ , sig in extensions[collection]:
                 info += "  {}\n".format(sig)
-        info += "\nFor help on individual extensions, use help(df.ext.<extension name>)"
+        info += "\nFor help on individual extensions, use help(df.{}.<extension name>)"\
+                    .format(__df_ext__)
         print(info)
         return
 

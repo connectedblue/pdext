@@ -3,6 +3,10 @@ module level constants
 """
 import os
 
+# Get parameters generated when the package was built
+from ._build_info import __version__
+__pdext__ = 'pdext'
+
 # Namespace at the pandas top level module where
 # extensions are managed
 __pd_ext__ = 'ext'
@@ -17,11 +21,11 @@ __df_ext__ = 'ext'
 __default_collection__ = '__no_collection'
 
 # Set the current version number
-from ._version import get_versions
-v = get_versions()
-__version__ = v.get("closest-tag", v["version"])
-__git_version__ = v.get("full-revisionid")
-del get_versions, v
+# from ._version import get_versions
+# v = get_versions()
+# __version__ = v.get("closest-tag", v["version"])
+# __git_version__ = v.get("full-revisionid")
+# del get_versions, v
 
 # directory where extensions are stored is relative to the 
 # location of this file
