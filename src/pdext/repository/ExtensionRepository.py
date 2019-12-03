@@ -12,8 +12,16 @@ class ExtensionRepository(user_repository_methods_mixin,
                           config_file_management_mixin,
                           extension_properties_mixin):
     """
-    Initialise the Extension Repository and pull in the functionality via
-    Mix-in classes 
+    This class allows the user to install and manage extensions that
+    are be accessible from data frames.
+
+    Assuming that ``pdext`` is imported as ``pd``, then the
+    methods in this class are accessed from the namespace::
+    
+        pd.ext.<method_name>
+    
+    where ``<method_name>`` is one of:
+
     """
     def __init__(self):
         self._build_extension_collections()

@@ -4,16 +4,37 @@ from ..symbols import __import_file_ext__, repository, __pdext__
 
 class ExtensionImporter(object):
     """
-    Allows extensions to be defined in a text file and imported 
-    using the import statement.
+    Extensions may also be to be defined in a text file and imported 
+    using the standard python ``import`` statement.
 
-    The text file must be have a suffix of .pdext.  
-    Format of text file:
+    The text file must be have a file extension of ``.pdext`` and be 
+    located in the same directory as the file where the ``import`` is
+    called from.
+
+    Format of text file::
+
         # Can contain comment lines beginning with #
+
         # Blank lines are ignored
-        /path/to/extension/files   extension_function1
-        /path/to/extension/files   collection.extension_function2
-        github:username/repo       extension_function3
+
+        # one extension specification per line
+        /path/to/extension/files  -> extension_function1
+        /path/to/extension/files  -> collection.extension_function2
+        github:username/repo      -> extension_function3
+
+    As an example, if a file named ``my_extensions.pdext`` is created
+    with the extensions above, then a file named ``analysis.py``
+    can begin::
+
+        import pdext as pd
+        import my_extensions
+
+        df = pd.DataFrame({'x': [1,2,3,4]})
+
+        # call the extension
+        df.ext.extension_function1()
+
+
     """
 
     def find_module(self, fullname, path=None):

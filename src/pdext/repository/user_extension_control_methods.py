@@ -53,8 +53,12 @@ class user_extension_control_methods_mixin(object):
     def disable_extension(self, name, *, _enabled=False):
         """
         Disable an extension
-        Input:
-            name -- string name of extension (including collection if there is one)
+        
+        *Input Parameters:*
+
+            **name:**
+
+                string name of extension (including collection if there is one)
         """
         # locate extension to be enabled/disabled
         collection, name=self._parse_extension_name(name)
@@ -65,16 +69,24 @@ class user_extension_control_methods_mixin(object):
     def enable_extension(self, name):
         """
         Enable an extension
-        Input:
-            name -- string name of extension (including collection if there is one)
+
+        *Input Parameters:*
+
+            **name:**
+            
+                string name of extension (including collection if there is one)
         """
         self.disable_extension(name, _enabled=True)
 
     def remove_extension(self, name):
         """
         Permanently remove an extension from the repository
-        Input:
-            name -- string name of extension (including collection if there is one)
+        
+        *Input Parameters:*
+
+            **name:**
+            
+                string name of extension (including collection if there is one)
         """
         # locate extension to be removed
         collection, name=self._parse_extension_name(name)

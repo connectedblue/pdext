@@ -18,28 +18,37 @@ class user_extension_install_methods_mixin(object):
     def import_extension(self, extension_spec):
         """
         Imports extensions that don't already exist into the default repo
-        Input:
-            extension_spec -- A string with one or more lines of format
-                                extension_location -> name
-            
-            where:
-                extension_location --
-                               location of all the files needed
-                               for that extension.  There must be a function
-                               with the extension name in one of the .py
-                               files at that location
-                Format options for extension files:
-                    <directory name on local file system>
-                    <.py file  name on local file system>
-                    github:username/repo[@branch/tag][/path/to/directory]
-                            where repo is a public repo on github for username
-                            latest commit on master is the default unless a
-                            specific branch or tag is optionally provided
-                            The extension files are assumed to be at the root
-                            of the repo unless a path is optionally provided
-                
-                name -- string name of extension (including collection if required)
-                        where it should be installed              
+        
+        *Input Parameters:*
+
+            **extension_spec:**
+    
+                A string with one or more lines of format::
+
+                    extension_location -> name
+
+                where:
+                    ``extension_location:``
+                        location of all the files needed
+                        for that extension.  There must be a function
+                        with the extension name in one of the ``.py``
+                        files at that location
+                        
+                        Format options:
+                            *   ``<directory name on local file system>``
+                            *   ``<.py file  name on local file system>``
+                            *   Files on GitHub are referenced::
+                            
+                                    github:username/repo[@branch/tag][/path/to/directory]
+                                
+                                where ``repo`` is a public repo on github for ``username``.
+                                The latest commit on `master` is the default unless a
+                                specific ``branch`` or ``tag`` is optionally provided.
+
+                    ``name:``
+                        string name of extension 
+                        (including collection if required)
+                        to be installed              
         """
         repo = os.path.join(self._repository_path(self.default_repository))
         parsed_spec = ExtensionSpecification(extension_spec, repo)
@@ -69,8 +78,11 @@ class user_extension_install_methods_mixin(object):
     def reinstall_extension(self, name):
         """
         Re-install an extension from the original source
-        Input:
-            name -- string name of extension (including collection if there is one)
+
+        *Input Parameters:*
+
+            **name:** 
+                string name of extension (including collection if there is one)
         """
         # locate extension to be removed
         collection, name=self._parse_extension_name(name)

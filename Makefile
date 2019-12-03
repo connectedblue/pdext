@@ -75,4 +75,8 @@ install_editable:
 uninstall:
 	-$(PIP_UNINSTALL) $(PACKAGE)
 
-all: build
+all: build doc
+
+doc:
+	-rm -rf docs/_build
+	-cd docs && make html
