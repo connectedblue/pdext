@@ -16,10 +16,16 @@ import sys
 pdext_location = os.path.join('..', 'src')
 sys.path.insert(0, os.path.abspath(pdext_location))
 
+# Get some constants needed for the documentation
+# This will need altering if the package name changes
+import pandex
+doc = pandex.ext.doc
+
+project_name = doc.__pdext__
 
 # -- Project information -----------------------------------------------------
 
-project = 'pdext'
+project = project_name
 copyright = '2019, Chris Shaw'
 author = 'Chris Shaw'
 
@@ -42,7 +48,8 @@ templates_path = ['_templates']
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 
+                    'change_project_name.md',]
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -56,3 +63,33 @@ html_theme = 'alabaster'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+# make a whole suite of allowable formats for substitions because
+# Sphinx doesn't allow to have in-line formatting on substitutions
+#   e.g. if |name| is a substitution, then |**name**| is the bold
+#        version
+# New formats can be added to the template if required
+def generate_substitutions(subs):
+    output = ''
+    template = """
+.. |{symbol}| replace:: {replacement}
+.. |*{symbol}*| replace:: *{replacement}*
+.. |**{symbol}**| replace:: **{replacement}**
+.. |`{symbol}`| replace:: `{replacement}`
+.. |``{symbol}``| replace:: ``{replacement}``
+"""
+    for s, r in subs.items():
+        output += template.format(symbol=s, replacement=r)
+    return output
+
+# substitutions used in rst files and doc strings
+# are defined here
+ext = doc.__pd_ext__
+rst_prolog = generate_substitutions({\
+                'pandex': project_name,
+                'demo_repo': 'connectedblue/pdext_collection',
+                'ext': ext,
+                'pd.ext': 'pd.{}'.format(ext),
+                'df.ext': 'df.{}'.format(ext),
+                'import.ext': doc.__import_file_ext__,
+})

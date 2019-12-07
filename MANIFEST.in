@@ -1,3 +1,3 @@
 include versioneer.py
-include src/pdext/_version.py
-include src/pdext/installed_extensions/README
+include src/pandex/installed_extensions/README
+include src/pandex/_version.py

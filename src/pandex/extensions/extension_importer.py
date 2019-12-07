@@ -7,7 +7,7 @@ class ExtensionImporter(object):
     Extensions may also be to be defined in a text file and imported 
     using the standard python ``import`` statement.
 
-    The text file must be have a file extension of ``.pdext`` and be 
+    The text file must be have a file extension of |``import.ext``| and be 
     located in the same directory as the file where the ``import`` is
     called from.
 
@@ -22,17 +22,19 @@ class ExtensionImporter(object):
         /path/to/extension/files  -> collection.extension_function2
         github:username/repo      -> extension_function3
 
-    As an example, if a file named ``my_extensions.pdext`` is created
+    As an example, if a file named ``my_extensions`` |``import.ext``| is created
     with the extensions above, then a file named ``analysis.py``
-    can begin::
+    can begin:
 
-        import pdext as pd
+    .. parsed-literal::
+
+        import |pandex| as pd
         import my_extensions
 
         df = pd.DataFrame({'x': [1,2,3,4]})
 
         # call the extension
-        df.ext.extension_function1()
+        |df.ext|.extension_function1()
 
 
     """

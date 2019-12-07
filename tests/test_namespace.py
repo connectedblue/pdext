@@ -21,7 +21,7 @@ def test_df_namespace(namespace, does_exist, df_A):
 
 def test_import_namespaces():
     # test that pd namespace is present and it is pandas!
-    import pdext as pd
+    import pandex as pd
     assert 'pd' in locals()
     assert hasattr(pd, 'DataFrame') == True
 

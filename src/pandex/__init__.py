@@ -32,11 +32,7 @@ sys.meta_path.append(ExtensionImporter())
 # (enables the test suite to access some functions in the module)
 sys.modules['_'+__name__] = sys.modules[__name__]
 
-# Attach the ExtensionRepository and ExtensionImporter class to allow
-# documentation to be auto generated
-pd.ExtensionRepository = ExtensionRepository
-pd.ExtensionImporter = ExtensionImporter
-
 # Substitute this module for the pandas module
 # configured with extension capability
 sys.modules[__name__] = pd
+

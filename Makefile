@@ -1,5 +1,5 @@
 # get the name of the package to build
-PACKAGE := $(shell python -c 'from src.pdext.symbols import __pdext__;print(__pdext__)')
+PACKAGE := $(shell python -c 'from src.pandex.symbols import __pdext__;print(__pdext__)')
 
 # Controlling whether to install an editable package or from a built tarball
 EDIT := true
@@ -28,7 +28,7 @@ PYTEST_FLAGS := $(PYTEST_SKIP) $(PYTEST_DEBUG) $(PYTEST_SUBSET)
 # Convenience shortcuts
 MAKEFILE_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
-PKG_LIB := pdext_tarballs
+PKG_LIB := pandex_tarballs
 PY_SETUP := python setup.py
 PIP_INSTALL := pip install
 PIP_UNINSTALL := pip uninstall -y
@@ -50,8 +50,8 @@ deploy: build
 	cp $(BUILT_GZ) $(PKG_LIB)
 
 clean:
-	-rm -rf dist src/pdext.egg-info  __pycache__ .pytest_cache src/pdext/installed_extensions/*.py
-	-cp src/pdext/installed_extensions/locations.yml.save src/pdext/installed_extensions/locations.yml
+	-rm -rf dist src/$(PACKAGE).egg-info  __pycache__ .pytest_cache src/$(PACKAGE)/installed_extensions/*.py
+	-cp src/$(PACKAGE)/installed_extensions/locations.yml.save src/$(PACKAGE)/installed_extensions/locations.yml
 
 test: clean install
 	-cd /tmp && pytest $(PYTEST_FLAGS) $(TEST_SUITE)

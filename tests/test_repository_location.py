@@ -16,7 +16,7 @@ of the methods can be tested
 import os,shutil
 import pytest
 
-from pdext.symbols import __installed_extensions__
+from pandex.symbols import __installed_extensions__
 
 def test_create_default(no_repo_defined):
     # no yaml file should exist when tests start

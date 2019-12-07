@@ -1,7 +1,7 @@
 Writing Extensions
 ==================
 
-The ``pdext`` package allows any function which operates on a dataframe to
+The |``pandex``| package allows any function which operates on a dataframe to
 be installed as an extension.  Functions may be stored in individual ``.py``
 files, local directories or modules or on GitHub.
 
@@ -11,7 +11,7 @@ the first argument.
 Example extension
 -----------------
 
-The following function is a valid ``pdext`` extension::
+The following function is a valid |``pandex``| extension::
 
     from math import pi
 
@@ -30,30 +30,36 @@ The following function is a valid ``pdext`` extension::
 .. note:: The first argument to the function need not be named ``df``.
 
 If this file is stored in a file named ``circle_calc.py``, then
-the extension may be installed as follows::
+the extension may be installed as follows:
 
-    pd.ext.import_extension('/path/to/circle_calc_file -> circle_calculations')
+.. parsed-literal::
 
-Note that ``circle_calc.py`` does not have to be in
-``/path/to/circle_calc_file`` itself - as long as it's in
-a subdirectory somewhere it will get installed.
+    |pd.ext|.import_extension('/path/to/circle_calc_file -> circle_calculations')
+
+.. note::  ``circle_calc.py`` does not have to be in
+           ``/path/to/circle_calc_file`` itself - as long as it's in
+           a subdirectory somewhere it will get installed.
 
 Extensions may make use of any installed package (dependencies that are not
 installed with be highlighted with a warning during import, and also in
-the output of ``pd.ext.show_extensions()``).
+the output of |``pd.ext``| ``.show_extensions()``).
 
 Extension usage
 ---------------
 
-If the user has created a dataframe named ``X``, then the extension can be
-accessed as follows::
+If the user has created a dataframe named ``df``, then the extension can be
+accessed as follows:
 
-    X.ext.circle_calculations()
+.. parsed-literal::
+
+    |df.ext|.circle_calculations()
 
 
-The docstring defined will be available for the dataframe ``X``::
+The docstring defined will be available for the dataframe ``df``:
 
-    help(X.ext.circle_calculations)
+.. parsed-literal::
+
+    help(|df.ext|.circle_calculations)
 
 Extension dependencies
 ----------------------
@@ -108,5 +114,5 @@ extension would be written as follows::
         df['area'] = area(df[radius])
 
 
-The ``pd.import_extension`` above remains the same - all the
+The |``pd.ext``| ``.import_extension`` above remains the same - all the
 correct files will be installed.

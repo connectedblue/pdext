@@ -1,7 +1,7 @@
 import os, importlib
 import pytest
 
-from pdext.symbols import pd_ext, df_ext, __import_file_ext__, __import_file_sep__, __pdext__
+from pandex.symbols import pd_ext, df_ext, __import_file_ext__, __import_file_sep__, __pdext__
 from fixtures.helpers import save_current_installed_extensions, make_test_repos
 
 def test_import_extension(temp_module_directory, df_X,testpackage1):

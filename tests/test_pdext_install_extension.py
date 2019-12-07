@@ -1,7 +1,7 @@
 from datetime import datetime
 import pytest
 
-from pdext.symbols import pd_ext, df_ext, __install_timestamp_fmt__,\
+from pandex.symbols import pd_ext, df_ext, __install_timestamp_fmt__,\
                           __default_collection__, __import_file_line_spec__
 from fixtures.helpers import save_current_installed_extensions, make_test_repos
 

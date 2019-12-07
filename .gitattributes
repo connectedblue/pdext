@@ -1,1 +1,2 @@
 src/pdext/_version.py export-subst
+src/pandex/_version.py export-subst

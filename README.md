@@ -1,13 +1,13 @@
-# pdext - An Extension Framework for pandas
+# pandex - An Extension Framework for pandas
 
-`pdext` is a framework for creating, managing and sharing extensions
+`pandex` is a framework for creating, managing and sharing extensions
 for the `pandas` package.
 
 There is a built-in extension system in `pandas` but it is not
 straightforward to share these between projects, virtual environments,
 other users on the same server or indeed, the wider world.
 
-`pdext` allows extensions to be installed from local files, directories
+`pandex` allows extensions to be installed from local files, directories
 or directly from public GitHub repositories.  Once installed, they persist 
 for a user across multiple virtual environments.
 
@@ -21,7 +21,7 @@ import pandas as pd
 with:
 
 ```
-   import pdext as pd
+   import pandex as pd
 ```
 
 and all dataframes created from `pd` will be able to access installed extensions.

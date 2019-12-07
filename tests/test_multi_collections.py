@@ -1,4 +1,4 @@
-from pdext.symbols import __df_ext__
+from pandex.symbols import __df_ext__
 
 def test_default_no_collection(pdext_with_loaded_testpackages,df_X):
     pd_ext, df_ext = pdext_with_loaded_testpackages

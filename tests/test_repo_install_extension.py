@@ -1,6 +1,6 @@
 import sys
 
-from pdext.symbols import df_ext, __df_ext__, __import_file_line_spec__
+from pandex.symbols import df_ext, __df_ext__, __import_file_line_spec__
 
 
 """

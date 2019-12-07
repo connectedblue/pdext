@@ -4,19 +4,24 @@ How to Install
 Installing the package
 ----------------------
 
-The package can be installed from pyPI using pip::
+The package can be installed from pyPI using pip:
 
-    pip install pdext
+.. parsed-literal::
+
+    pip install |pandex|
 
 The only dependency is ``pandas`` which will be installed
 if not already present.
 
-The package is used as follows::
+The package is used as follows:
 
-    import pdext as pd
+.. parsed-literal::
+
+    import |pandex| as pd
 
 Once this has been imported, ``pd`` now references the
-standard ``pandas`` and can be used in the normal way.
+standard ``pandas`` and can be used in the normal way. The
+extension functionality resides in the |``pd.ext``| namespace.
 
 Installing Extensions
 ---------------------
@@ -41,19 +46,25 @@ needs to be located on the local filesystem somewhere or in
 a publicly accessible GitHub repository
 
 To install an extension located in a file in a directory ``bar``
-you simply import::
+you simply import:
 
-    pd.ext.import_extension('path/to/bar -> my_extension')
+.. parsed-literal::
+
+    |pd.ext|.import_extension('path/to/bar -> my_extension')
 
 You can also organise extensions into collection namespaces
-to make them easier to manage.  This is done during import::
+to make them easier to manage.  This is done during import:
 
-    pd.ext.import_extension('path/to/bar -> collection1.my_extension')
+.. parsed-literal::
+
+    |pd.ext|.import_extension('path/to/bar -> collection1.my_extension')
 
 If an extension was located in a GitHub repository, then it
-can be imported as follows::
+can be imported as follows:
 
-    pd.ext.import_extension('github:username/repo -> my_extension')
+.. parsed-literal::
+
+    |pd.ext|.import_extension('github:username/repo -> my_extension')
 
 
 Extensions from GitHub can also be organised into collections if
@@ -66,15 +77,17 @@ taken.
 Accessing installed extensions
 ------------------------------
 
-Once installed, the extension are accessed from the ``ext`` namespace
-attached to the dataframe::
+Once installed, the extension are accessed from the |``ext``| namespace
+attached to the dataframe:
 
-    import pdext as pd
-    x = pd.DataFrame({'col1': [3,4,5]})
+.. parsed-literal::
+
+    import |pandex| as pd
+    df = pd.DataFrame({'col1': [3,4,5]})
 
     # call the extension
-    x.ext.my_extension(10, 2)
+    |df.ext|.my_extension(10, 2)
 
     # if the extension was installed in a collection ...
-    x.ext.collection1.my_extension(10, 2)
+    |df.ext|.ext.collection1.my_extension(10, 2)
 

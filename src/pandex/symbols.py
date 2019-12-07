@@ -5,7 +5,7 @@ import os
 
 # Get parameters generated when the package was built
 from ._build_info import __version__
-__pdext__ = 'pdext'
+__pdext__ = 'pandex'
 
 # Namespace at the pandas top level module where
 # extensions are managed

@@ -5,9 +5,9 @@ import os, shutil, tempfile
 import pytest
 from importlib import import_module
 
-import pdext as pd
-ExtensionRepository = import_module('_pdext.repository').ExtensionRepository
-sym = import_module('_pdext.symbols')
+import pandex as pd
+ExtensionRepository = import_module('_pandex.repository').ExtensionRepository
+sym = import_module('_pandex.symbols')
 df_ext = sym.df_ext 
 repository = sym.repository
 __import_file_line_spec__ = sym.__import_file_line_spec__

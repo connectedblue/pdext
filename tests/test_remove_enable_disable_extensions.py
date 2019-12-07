@@ -1,6 +1,6 @@
 
 import pytest
-from pdext.symbols import __df_ext__, __install_timestamp_fmt__, __default_collection__
+from pandex.symbols import __df_ext__, __install_timestamp_fmt__, __default_collection__
 
 def test_enable_disable_extension(pdext_with_loaded_testpackages,df_X):
     pd_ext, df_ext = pdext_with_loaded_testpackages
