@@ -30,7 +30,7 @@ copyright = '2019, Chris Shaw'
 author = 'Chris Shaw'
 
 # The full version, including alpha/beta/rc tags
-release = 'v1.0'
+release = 'v0.2'
 
 
 # -- General configuration ---------------------------------------------------
@@ -96,4 +96,5 @@ rst_prolog = generate_substitutions({\
                 'pd.ext': 'pd.{}'.format(ext),
                 'df.ext': 'df.{}'.format(ext),
                 'import.ext': doc.__import_file_ext__,
+                'version': doc.__version__,
 })

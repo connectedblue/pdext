@@ -22,7 +22,7 @@ class ExtensionImporter(object):
         /path/to/extension/files  -> collection.extension_function2
         github:username/repo      -> extension_function3
 
-    As an example, if a file named ``my_extensions`` |``import.ext``| is created
+    As an example, if a file named ``my_extensions``\ |``import.ext``| is created
     with the extensions above, then a file named ``analysis.py``
     can begin:
 

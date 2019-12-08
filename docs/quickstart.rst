@@ -38,7 +38,7 @@ Quick Start
     .. parsed-literal::
 
         >>> pd.ext.show_extensions()
-        |pandex| v0.1
+        |pandex| v\ |version|
         There is 1 extension installed:
 
         |df.ext|.circle_calculations(radius)
@@ -49,7 +49,7 @@ Quick Start
     from different sources, it is more convenient to specify them
     in a |``import.ext``| file which can be imported.
 
-    a.  Create a file called ``my_extensions`` |``import.ext``| in the current
+    a.  Create a file called ``my_extensions``\ |``import.ext``| in the current
         directory with the following content:
 
         .. parsed-literal::

@@ -5,7 +5,7 @@ from .user_repository_methods import user_repository_methods_mixin
 from .user_extension_control_methods import user_extension_control_methods_mixin
 from .user_extension_install_methods import user_extension_install_methods_mixin
 
-from ..symbols import __pdext__, __pd_ext__, __import_file_ext__
+from ..symbols import __pdext__, __pd_ext__, __import_file_ext__, __version__
 from ..extensions import ExtensionImporter
 
 class ExtensionRepository(user_repository_methods_mixin,
@@ -49,6 +49,7 @@ class doc:
     __pdext__ = __pdext__
     __pd_ext__ = __pd_ext__
     __import_file_ext__ = __import_file_ext__
+    __version__ = __version__
 
 setattr(ExtensionRepository, 'doc', doc)
 
