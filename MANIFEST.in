@@ -1,3 +1,4 @@
 include versioneer.py
 include src/pandex/installed_extensions/README
+include src/pandex/installed_extensions/locations.yml
 include src/pandex/_version.py

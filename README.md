@@ -45,3 +45,5 @@ To see the currently installed extensions:
 ```
    pd.ext.show_extensions()
 ```
+
+Full [documentation can be found here](https://pandex.readthedocs.io/en/stable/)

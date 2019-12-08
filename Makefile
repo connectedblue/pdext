@@ -42,7 +42,7 @@ endif
 PKG_TARBALL := $(PKG_LIB)/$(PACKAGE)-$(VERSION).tar.gz
 
 build: clean
-	- $(PY_SETUP) sdist
+	- $(PY_SETUP) sdist bdist_wheel
 
 # Allows for a separate directory of tarball history to be maintained
 deploy: build
@@ -57,14 +57,26 @@ test: clean install
 	-cd /tmp && pytest $(PYTEST_FLAGS) $(TEST_SUITE)
 
 ifdef TARBALL
-install: deploy install_tarball
+INSTALL_FLAGS=
+INSTALL_PKG=$(PKG_TARBALL)
+install: deploy install_pkg
 else
 ifdef EDIT
-install: uninstall install_editable
+INSTALL_FLAGS=-e
+INSTALL_PKG=.
+install: uninstall install_pkg
+ifdef PYPI
+INSTALL_FLAGS=
+INSTALL_PKG=$(PKG_TARBALL)
+install: install_pkg
 else
 install: 
 endif
 endif
+endif
+
+install_pkg: build
+	-$(PIP_INSTALL) $(INSTALL_FLAGS) $(INSTALL_PKG)
 
 install_tarball:
 	-$(PIP_INSTALL) $(PKG_TARBALL)
