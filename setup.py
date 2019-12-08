@@ -23,7 +23,7 @@ setup(
     packages=find_packages('src'),
     package_dir={'': 'src'},
     install_requires=[
-        'pandas', 
+        'pandas', 'pyyaml', 
     ],
     include_package_data=True
     )

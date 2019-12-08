@@ -1,8 +1,5 @@
 import sys
 
-from pandex.symbols import df_ext, __df_ext__, __import_file_line_spec__
-
-
 """
 This set of tests ensures that the import_extension
 methods work as a unit test on the ExtensionRepository class
@@ -13,14 +10,12 @@ test_pdext_install_extension will be run
 
 """
 
-
-
-def test_install(two_test_session_repos, testpackage1):
+def test_install(two_test_session_repos, testpackage1, sym):
     repo = two_test_session_repos
     sys_path = sys.path
 
     def spec(func):
-            return __import_file_line_spec__.format(testpackage1, func)
+            return sym.__import_file_line_spec__.format(testpackage1, func)
     repo.import_extension(spec('calculate_circumference_from_radius'))
     repo.import_extension(spec('calculate_circumference_from_diameter'))
 
@@ -43,13 +38,13 @@ def test_package1func2(two_test_session_repos, df_A):
     assert 'circumference1_from_diameter' in df_A
 
 # Now test that they work when called as extensions
-def test_dfext_package1func1(df_X):
+def test_dfext_package1func1(df_X, sym):
     assert 'circumference1_from_radius' not in df_X
     # get the extension to test
-    ext = df_ext(df_X).calculate_circumference_from_radius
+    ext = sym.df_ext(df_X).calculate_circumference_from_radius
     # and execute it
     ext('numbers')
     assert 'circumference1_from_radius' in df_X
     # Has the docstring pulled through correctly?
-    usage = 'USAGE: df.{}.calculate_circumference_from_radius(radius)'.format(__df_ext__) 
+    usage = 'USAGE: df.{}.calculate_circumference_from_radius(radius)'.format(sym.__df_ext__) 
     assert usage in ext.__doc__

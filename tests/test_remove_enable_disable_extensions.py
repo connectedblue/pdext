@@ -1,6 +1,5 @@
 
 import pytest
-from pandex.symbols import __df_ext__, __install_timestamp_fmt__, __default_collection__
 
 def test_enable_disable_extension(pdext_with_loaded_testpackages,df_X):
     pd_ext, df_ext = pdext_with_loaded_testpackages
@@ -60,7 +59,7 @@ def test_enable_disable_extension(pdext_with_loaded_testpackages,df_X):
     pd_ext.enable_extension('circle1.calculate_circumference_from_diameter')
     pd_ext.enable_extension('calculate_circumference_from_radius')
 
-def test_reinstall_extension(pdext_with_loaded_testpackages,df_X):
+def test_reinstall_extension(pdext_with_loaded_testpackages,df_X, sym):
     pd_ext, df_ext = pdext_with_loaded_testpackages
 
     assert 'circumference1_from_radius' not in df_X.columns
@@ -75,7 +74,7 @@ def test_reinstall_extension(pdext_with_loaded_testpackages,df_X):
     ext = df_ext(df_X)
 
     # time of install 
-    ext_object = pd_ext.extension_collections[__default_collection__]\
+    ext_object = pd_ext.extension_collections[sym.__default_collection__]\
                                              ['calculate_circumference_from_radius']
     first_install_time = ext_object.ext_info.install_time
 

@@ -9,6 +9,7 @@ __exports = {
 '.helpers' : ['temp_session_directory', 'temp_module_directory',
               'temp_function_directory', 
               'save_current_installed_extensions', 'make_test_repos'],
+'.symbols': ['sym',]
 }
 
 from importlib import import_module

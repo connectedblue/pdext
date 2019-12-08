@@ -19,16 +19,7 @@ documentation auto generates.
     * Update bits of `Makefile`:
         * `PACKAGE`
         * `PKG_LIB`  (also `mkdir` the new tarball directory)
-    * Update `testrepos.py`, `helpers.py`, `testdataframes.py` in `fixtures`
-    * Update imports on following tests:
-        * `test_import_extension.py`
-        * `test_install_from_github.py`
-        * `test_multi_collections.py`
-        * `test_pdext_install_extension.py`
-        * `test_remove_enable_disable_extensions.py`
-        * `test_repo_install_extension.py`
-        * `test_show_extension.py`
-        * `test_repository_location.py`
+    * Update `testrepos.py`, `helpers.py`, `testdataframes.py`, `symbols.py` in `fixtures`
     * Update import in tests:
         * test_import_namespaces (in test_namespace.py)
 

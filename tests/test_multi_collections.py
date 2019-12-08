@@ -1,6 +1,6 @@
-from pandex.symbols import __df_ext__
+#from pandex.symbols import __df_ext__
 
-def test_default_no_collection(pdext_with_loaded_testpackages,df_X):
+def test_default_no_collection(pdext_with_loaded_testpackages,df_X, sym):
     pd_ext, df_ext = pdext_with_loaded_testpackages
     # test1 is the default repository
     pd_ext.new_search_order(['test1', 'test2'])
@@ -20,7 +20,7 @@ def test_default_no_collection(pdext_with_loaded_testpackages,df_X):
     assert 'circumference2_from_radius' in df_X
     assert 'circumference2_from_diameter' in df_X
 
-    usage = 'USAGE: df.{}.calculate_circumference_from_radius(radius)'.format(__df_ext__) 
+    usage = 'USAGE: df.{}.calculate_circumference_from_radius(radius)'.format(sym.__df_ext__) 
     assert usage in ext.calculate_circumference_from_radius.__doc__
 
 def test_collection(pdext_with_loaded_testpackages,df_X):
@@ -86,7 +86,7 @@ def test_collection_across_repos_extension_clash(pdext_with_loaded_testpackages,
     assert 'circumference2_from_radius' in df_X
     assert 'circumference2_from_diameter' not in df_X
 
-def test_standalone_py_extension_file(pdext_with_loaded_testpackages,df_X):
+def test_standalone_py_extension_file(pdext_with_loaded_testpackages,df_X, sym):
     pd_ext, df_ext = pdext_with_loaded_testpackages
     # test1 is the default repository
     pd_ext.new_search_order(['test1', 'test2'])
@@ -105,7 +105,7 @@ def test_standalone_py_extension_file(pdext_with_loaded_testpackages,df_X):
     assert 'circumference1_from_radius' not in df_X
     assert 'circumference1_from_diameter' not in df_X
 
-    usage = 'USAGE: df.{}.singlepy.calculate_circumference_from_radius(radius)'.format(__df_ext__) 
+    usage = 'USAGE: df.{}.singlepy.calculate_circumference_from_radius(radius)'.format(sym.__df_ext__) 
     assert usage in ext.singlepy.calculate_circumference_from_radius.__doc__
 
 

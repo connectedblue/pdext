@@ -16,15 +16,13 @@ of the methods can be tested
 import os,shutil
 import pytest
 
-from pandex.symbols import __installed_extensions__
-
-def test_create_default(no_repo_defined):
+def test_create_default(no_repo_defined, sym):
     # no yaml file should exist when tests start
-    assert os.path.isfile(__installed_extensions__) == False
+    assert os.path.isfile(sym.__installed_extensions__) == False
     repo, test_dir = no_repo_defined
     repo = repo()
     # and then the yaml should after the repo is instantiated
-    assert os.path.isfile(__installed_extensions__) == True
+    assert os.path.isfile(sym.__installed_extensions__) == True
     assert repo.default_repository=='user'
 
 def test_adding_and_changing_default(no_repo_defined):
