@@ -78,8 +78,9 @@ class ExtensionLocation(object):
             branch = repo[1]
             repo = repo[0]
 
-        path = os.path.join('{repo}-{branch}'.format(repo=repo, branch=branch),
-                            path[1:])
+        # bug #75 from windows user - this path needs to be in
+        # unix form in order for ZipFile to extract properly
+        path = '{repo}-{branch}'.format(repo=repo, branch=branch) +'/' + path[1:]
         url='https://github.com/{username}/{repo}/archive/{branch}.zip'\
                 .format(username=username, repo=repo, branch=branch)
         urllib.request.urlretrieve(url, zip_file)
