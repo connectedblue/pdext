@@ -35,18 +35,18 @@ PIP_UNINSTALL := pip uninstall -y
 FIND_LATEST_FILE := -type f -printf '%T@ %p\n' | sort -n | tail -1 | cut -f2- -d" "
 TEST_SUITE := $(MAKEFILE_DIR)/tests
 
-CURRENT_VERSION := $(shell python -c 'import versioneer; print(versioneer.get_version())')
+CURRENT_VERSION := $(shell python -c 'from src.pandex._build_info import __version__;print(__version__)')
 ifndef VERSION 
 VERSION := $(CURRENT_VERSION)
 endif
-PKG_TARBALL := $(PKG_LIB)/$(PACKAGE)-$(VERSION).tar.gz
+PKG_TARBALL := $(shell find $(PKG_LIB)/*whl $(FIND_LATEST_FILE))  
 
 build: clean
 	- $(PY_SETUP) sdist bdist_wheel
 
 # Allows for a separate directory of tarball history to be maintained
 deploy: build
-	-$(eval BUILT_GZ := $(shell find dist $(FIND_LATEST_FILE)))
+	-$(eval BUILT_GZ := $(shell find dist/*whl $(FIND_LATEST_FILE)))
 	cp $(BUILT_GZ) $(PKG_LIB)
 
 clean:
@@ -74,6 +74,15 @@ install:
 endif
 endif
 endif
+
+ifdef LIVE
+TWINE_FLAGS=
+else
+TWINE_FLAGS=--repository-url https://test.pypi.org/legacy/
+endif
+
+upload:
+	- python -m twine upload $(TWINE_FLAGS) dist/*
 
 install_pkg: build
 	-$(PIP_INSTALL) $(INSTALL_FLAGS) $(INSTALL_PKG)
