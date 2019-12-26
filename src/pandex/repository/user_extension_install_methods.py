@@ -85,8 +85,8 @@ class user_extension_install_methods_mixin(object):
                 string name of extension (including collection if there is one)
         """
         # locate extension to be removed
-        collection, name=self._parse_extension_name(name)
-        ext = self._get_extension_object(name, collection)
+        collection, ext_name=self._parse_extension_name(name)
+        ext = self._get_extension_object(ext_name, collection)
         install_args = ext.install_args
         self.remove_extension(name)
         self.import_extension(**install_args)

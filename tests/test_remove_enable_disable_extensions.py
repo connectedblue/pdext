@@ -152,4 +152,35 @@ def test_remove_extension(pdext_with_loaded_testpackages,df_X):
     with pytest.raises(AttributeError):
         ext.circle1.calculate_circumference_from_diameter('numbers')
     
+
+def test_reinstall_extension_from_collection(pdext_with_loaded_testpackages,df_X):
+    pd_ext, df_ext = pdext_with_loaded_testpackages
     
+    assert 'circumference3_from_radius' not in df_X.columns
+    assert 'circumference3_from_diameter' not in df_X.columns
+    # get the extension to test
+    ext = df_ext(df_X)
+    
+    ext.singlepy.calculate_circumference_from_radius('numbers')
+    ext.singlepy.calculate_circumference_from_diameter('numbers')
+    assert 'circumference3_from_radius' in df_X.columns
+    assert 'circumference3_from_diameter' in df_X.columns
+    df_X = df_X.drop(columns=['circumference3_from_radius', 'circumference3_from_diameter'])
+    ext = df_ext(df_X)
+
+    # time of install 
+    ext_object = pd_ext.extension_collections['singlepy']\
+                                             ['calculate_circumference_from_radius']
+    first_install_time = ext_object.ext_info.install_time
+
+    # reinstall radius
+    pd_ext.reinstall_extension('singlepy.calculate_circumference_from_radius')
+
+    ext.singlepy.calculate_circumference_from_radius('numbers')
+    ext.singlepy.calculate_circumference_from_diameter('numbers')
+    assert 'circumference3_from_radius' in df_X.columns
+    assert 'circumference3_from_diameter' in df_X.columns
+    df_X = df_X.drop(columns='circumference3_from_diameter')
+    ext = df_ext(df_X)
+
+    assert ext_object.ext_info.is_earlier_than(first_install_time) == False
