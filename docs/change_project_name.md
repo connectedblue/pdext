@@ -9,12 +9,9 @@ documentation auto generates.
 1. Change `__pdext__` in the `symbols.py` file.
     * Documentation should auto generate after this step
 
-
 2. A number of steps to get project to install and tests to pass
     * Change project directory name under `src`
-    * change imports and version location in `setup.py`
-    * change `setup.cfg` and re-run `versioneer`
-    * remove stuff added to `__init__.py` by `versioneer`
+    * change imports in `setup.py`
     * Update `MANIFEST.in`
     * Update bits of `Makefile`:
         * `PACKAGE`

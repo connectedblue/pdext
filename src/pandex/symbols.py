@@ -3,9 +3,9 @@ module level constants
 """
 import os
 
-# Get parameters generated when the package was built
-from ._build_info import __version__
+# Package name and version  
 __pdext__ = 'pandex'
+__version__ = '0.2.1+dev'
 
 # Namespace at the pandas top level module where
 # extensions are managed

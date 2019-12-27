@@ -19,7 +19,7 @@ def test_df_namespace(namespace, does_exist, df_A):
         with pytest.raises(AttributeError):
             getattr(df_A, namespace)
 
-def test_import_namespaces():
+def test_import_namespaces(sym):
     # test that pd namespace is present and it is pandas!
     import pandex as pd
     assert 'pd' in locals()
@@ -32,6 +32,9 @@ def test_import_namespaces():
     assert getattr(pd, __test_pd_ext__).show_extensions() is None
     df = getattr(pd, 'DataFrame')()
     assert hasattr(df, __test_df_ext__) == True
+
+    # and the version number is correct
+    assert getattr(pd, __test_pd_ext__).__version__ == sym.__version__
         
 
 

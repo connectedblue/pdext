@@ -1,5 +1,6 @@
 # get the name of the package to build
 PACKAGE := $(shell python -c 'from src.pandex.symbols import __pdext__;print(__pdext__)')
+VERSION := $(shell python -c 'from src.pandex.symbols import __version__;print(__version__)')
 
 # Controlling whether to install an editable package or from a built tarball
 EDIT := true
@@ -35,10 +36,6 @@ PIP_UNINSTALL := pip uninstall -y
 FIND_LATEST_FILE := -type f -printf '%T@ %p\n' | sort -n | tail -1 | cut -f2- -d" "
 TEST_SUITE := $(MAKEFILE_DIR)/tests
 
-CURRENT_VERSION := $(shell python -c 'from src.pandex._build_info import __version__;print(__version__)')
-ifndef VERSION 
-VERSION := $(CURRENT_VERSION)
-endif
 PKG_TARBALL := $(shell find $(PKG_LIB)/*whl $(FIND_LATEST_FILE))  
 
 build: clean
@@ -101,3 +98,7 @@ all: build doc
 doc:
 	-rm -rf docs/_build
 	-cd docs && make html
+
+bump:
+	-git tag -a v$(VERSION) -m "Created latest version tag to match sym.__version__"
+	-git push --tags
