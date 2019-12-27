@@ -17,6 +17,7 @@ def sym():
         __install_timestamp_fmt__ = _sym.__install_timestamp_fmt__
 
         __pdext__ = _sym.__pdext__
+        __version__ = _sym.__version__
         __pd_ext__ = _sym.__pd_ext__
         __df_ext__ = _sym.__df_ext__
         __default_collection__ = _sym.__default_collection__
